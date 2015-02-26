@@ -1,20 +1,32 @@
 {
   "name": "angular-data-mapping",
   "version": "0.1.1",
-  "main": "./src/*",
+  "main": [
+    "dist/datamapping.js"
+  ],
+  "moduleType": [
+    "globals"
+  ],
+  "license": "MIT",
   "ignore": [
-    ".*",
+    "**/.*",
     "examples",
-    "tests"
+    "tests",
+    "node_modules",
+    "bower_components"
   ],
   "keywords":[
     "angular",
+    "angularjs",
     "data",
-    "data-mapping"
+    "mapping",
+    "data-mapping",
+    "entity",
+    "entities"
   ],
   "dependencies": {
     "jquery": ">=1.9",
     "bootstrap": ">=3",
     "angular": ">=1.2.0"
   }
-} 
+}
