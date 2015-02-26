@@ -1,24 +1,104 @@
-/**
- * Created by Oleg Galaburda on 25.02.2015.
- * @exports Entity
- */
-/**
- * @namespace Entity
- * @constructor
- */
+
+(function () {
+	angular.module('aw.datamapping', []).provider('entityService',
+    function EntityServiceProvider() {
+    EntityServiceSharedInterface.apply(this);
+    this.register = addType;
+    this.setDefaultType = function (constructor) {
+      defaultType = constructor;
+    };
+    this.setDefaultNamespace = function (name) {
+      defaultNamespace = name || '';
+    };
+    this.$get = function EntityServiceFactory() {
+      return new EntityService();
+    };
+  });
+  function EntityService() {
+    EntityServiceSharedInterface.apply(this);
+    this.create = function (name, data, entityTypeMap, namespace) {
+      var definition = this.get(name, namespace);
+      return Entity.create(data, definition, entityTypeMap);
+    };
+    this.createNew = function (name, namespace) {
+      var definition = this.get(name, namespace);
+      return new definition();
+    };
+    this.factory = function (name, entityTypeMap, namespace) {
+    };
+    this.verify = function (data, strict) {
+    };
+  }
+  function EntityServiceSharedInterface() {
+    this.extend = function (constructor) {
+      constructor.prototype = new Entity();
+      constructor.prototype.constructor = constructor;
+      return constructor;
+    };
+    this.isEntity = function (instance) {
+      return instance instanceof Entity;
+    };
+    this.isEntityClass = function (constructor) {
+      return constructor instanceof Function && (constructor === Entity || Entity.prototype.isPrototypeOf(constructor.prototype));
+    };
+    this.get = getType;
+    this.getNamespace = getNamespace;
+  }
+var namespaces = {},
+  defaultType = null,
+  defaultNamespace = '';
+function addType(name, constructor, namespace) {
+  if(name instanceof QNameEntity){
+    namespace = name.localName;
+    name = name.uri;
+  }
+  getNamespace(namespace).add(name, constructor);
+}
+function getType(name, namespace) {
+  if(name instanceof QNameEntity){
+    namespace = name.localName;
+    name = name.uri;
+  }
+  return getNamespace(namespace).get(name);
+}
+function getNamespace(name) {
+  var namespace;
+  name = name || defaultNamespace;
+  if (namespaces.hasOwnProperty(name)) {
+    namespace = namespaces[name];
+  } else {
+    namespaces[name] = namespace = new EntityNamespace(name);
+  }
+  return namespace;
+}
+function EntityNamespace(name) {
+  name =  name ? String(name) : '';
+  var definitions = {};
+  Object.defineProperty(this, 'name', {value: name, writable: false, enumerable: true});
+  this.add = function (name, definition) {
+    if (definitions.hasOwnProperty(name)) {
+      throw new Error('EntityNamespace "' + this.name + '" already has entity with name "' + name + '".');
+    } else if (typeof(definition) !== "function") {
+      throw new Error('EntityNamespace#add requires second parameter to be Entity constructor function.');
+    } else {
+      definitions[name] = definition;
+    }
+  };
+  this.get = function (name) {
+    var definition;
+    name = name || defaultType;
+    if (definitions.hasOwnProperty(name) && definitions[name] instanceof Function) {
+      definition = definitions[name];
+    } else {
+      throw new Error('EntityNamespace "' + this.name + '" does not have entity with name "' + name + '".');
+    }
+    return definition;
+  };
+}
 function Entity() {
-  /**
-   * Will copy "data" properties to this object
-   * @function
-   * @name Entity#apply
-   * @param {Object} data
-   * @param {Object} entityTypeMap - Entity map is a hash object with propertyName: EntityConstructor or propertyName:{constructor:EntityConstructor, childProperty: ...}
-   * @instance
-   */
   this.apply = function (data, entityTypeMap) {
     var self = this,
       param;
-    // inner function to detect type of property value -- simple or complex
     function apply(value, entityType) {
       var result;
       if (value && typeof(value) === "object") {
@@ -32,16 +112,15 @@ function Entity() {
       }
       return result || value;
     }
-
     function createEntity(data, entityType) {
       var result;
       if (entityType) {
         if(entityType instanceof QNameEntity || typeof(entityType)==='string'){
           entityType = getType(entityType);
         }
-        if (typeof(entityType) === "function") { // Entity Constructor
+        if (typeof(entityType) === "function") {
           result = Entity.create(data, entityType);
-        } else { // {constructor: EntityConstructor, childProperty: ...}
+        } else {
           result = Entity.create(data, entityType.constructor, entityType);
         }
       } else {
@@ -49,7 +128,6 @@ function Entity() {
       }
       return result;
     }
-
     function applyArray(value, entityType) {
       var list = [];
       var length = value.length,
@@ -59,10 +137,8 @@ function Entity() {
       }
       return list;
     }
-
     for (param in data) {
       if (data.hasOwnProperty(param)) {
-        //console.log(' -- ', param);
         if (this[param] instanceof Entity) {
           this[param].apply(data[param], entityTypeMap && entityTypeMap.hasOwnProperty(param) ? entityTypeMap[param] : null);
         } else {
@@ -70,20 +146,11 @@ function Entity() {
         }
       }
     }
-    //console.log('##ENTITY Apply', this);
   };
-  /**
-   * Make a copy of this object
-   * @function
-   * @name Entity#copy
-   * @returns {Entity}
-   */
   this.copy = function () {
-    //console.log('##ENTITY Original', this);
     var inst = new (this.constructor || this.__proto__.constructor)(),
       param,
       value;
-    // inner function to detect type of property value -- simple or complex
     function copy(value) {
       var result = value;
       if (value && typeof(value) === "object") {
@@ -95,7 +162,6 @@ function Entity() {
       }
       return result;
     }
-
     function copyArray(value) {
       var list = [],
         index;
@@ -105,16 +171,13 @@ function Entity() {
       }
       return list;
     }
-
     for (param in this) {
       if (this.hasOwnProperty(param)) {
         value = this[param];
         if (typeof(value) === "function") continue;
         inst[param] = copy(value);
-        //console.log(' --- ', param, '=', value, inst[param]);
       }
     }
-    //console.log('## ----- Copy', inst);
     return inst;
   };
   this.valueOf = function (depth) {
@@ -124,7 +187,6 @@ function Entity() {
       result = {},
       param,
       value;
-    // inner function to detect type of property value -- simple or complex
     function valueOf(value, depth) {
       var result;
       if (depth >= 0 && value && typeof(value) === "object") {
@@ -138,7 +200,6 @@ function Entity() {
       }
       return result;
     }
-
     function valueOfArray(value, depth) {
       var list = [],
         length = value.length,
@@ -148,7 +209,6 @@ function Entity() {
       }
       return list;
     }
-
     function valueOfObject(value, depth) {
       var index = originals.indexOf(value),
         result;
@@ -161,7 +221,6 @@ function Entity() {
       }
       return result;
     }
-
     for (param in this) {
       if (param.charAt() === "$") continue;
       value = this[param];
@@ -172,24 +231,14 @@ function Entity() {
     return result;
   };
 }
-
-/**
- * @function
- * @name Entity.create
- * @param {Object} data
- * @param {Function} [constructor]
- * @param {Object} [propertyTypeMap]
- * @return {Entity}
- * @static
- */
 Entity.create = function Entity_create(data, constructor, entityTypeMap) {
   var instance;
   if (!constructor) {
     if (data instanceof Entity) {
       constructor = data.constructor || data.__proto__.constructor;
-    } else if ("$$constructor" in data && data["$$constructor"]) {
+    } else if ("$constructor" in data && data["$constructor"]) {
       try {
-        eval("constructor = window." + data["$$constructor"]);
+        eval("constructor = window." + data["$constructor"]);
       } catch (error) {
         console.log(error);
       }
@@ -202,6 +251,11 @@ Entity.create = function Entity_create(data, constructor, entityTypeMap) {
   if (data) {
     instance.apply(data, entityTypeMap);
   }
-  //console.log('Entity.create', instance, entityTypeMap);
   return instance;
 };
+function QNameEntity(name, uri) {
+  this.localName = name ? String(name) : '';
+  this.uri = uri ? String(uri) : '';
+}
+addType('QName', QNameEntity);
+})();

@@ -1,0 +1,22 @@
+{
+  "name": "gulp-build",
+  "description": "Dependencies for gulp build file",
+  "version": "0.0.0",
+  "dependencies": {
+    "express": ">0.1.9"
+  },
+  "devDependencies": {
+    "gulp": "^3.8.10",
+    "gulp-rev": "^2.0.1",
+    "gulp-uglify": "^1.0.1",
+    "gulp-usemin": "^0.3.8",
+	"gulp-strip-comments": "^1.0.1",
+    "gulp-open": "^0.3.2",
+    "gulp-rename": "^1.2.0",
+    "connect-livereload": ">0.0.1",
+    "tiny-lr": ">0.0.1",
+    "path": ">0.0.1",
+	"strip-comments": "^0.3.2",
+    "glob": "^4.3.5"
+  }
+}
