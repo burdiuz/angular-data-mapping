@@ -1,7 +1,7 @@
 {
   "name": "gulp-build",
   "description": "Dependencies for gulp build file",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "dependencies": {
     "express": ">0.1.9"
   },
