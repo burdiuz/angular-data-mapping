@@ -4,15 +4,52 @@
  */
 /**
  * @namespace Entity
+ * @extends Object
  * @constructor
  */
 function Entity() {
   /**
+   * Create property with autocheck for value type in mutator method
+   * @function Entity#property
+   * @param {string} name
+   * @param {*} value
+   * @param {boolean} readOnly
+   * @param {string|Function} valueType
+   */
+  this.property = function(name, value, readOnly, valueType){
+    if(typeof(value)=="undefined" && !valueType) throw new Error("Property must have a default value ot type defined to determine its type.");
+    if(!valueType) valueType = value.constructor instanceof Function && value instanceof value.constructor ? value.constructor : typeof(value);
+    var descriptor = {
+      get: function(){
+        return value;
+      },
+      enumerable: true
+    };
+    if(!readOnly){
+      if(typeof(valueType)=="string") descriptor.set = mutator_type;
+      else descriptor.set = mutator_class;
+    }
+    Object.defineProperty(this, name, descriptor);
+    function mutator_type(newValue){
+      if(typeof(newValue)==valueType){
+        value = newValue;
+      }else{
+        throw new Error('Property "'+name+'" value must be of "'+valueType+'" type, "'+typeof(newValue)+'" passed.');
+      }
+    }
+    function mutator_class(newValue){
+      if(newValue instanceof valueType){
+        value = newValue;
+      }else{
+        throw new Error('Property "'+name+'" new value of wrong type.');
+      }
+    }
+  };
+  /**
    * Will copy "data" properties to this object
-   * @function
-   * @name Entity#apply
+   * @function Entity#apply
    * @param {Object} data
-   * @param {Object} entityTypeMap - Entity map is a hash object with propertyName: EntityConstructor or propertyName:{constructor:EntityConstructor, childProperty: ...}
+   * @param {Object} entityTypeMap Entity map is a hash object with propertyName: EntityConstructor or propertyName:{constructor:EntityConstructor, childProperty: ...}
    * @instance
    */
   this.apply = function (data, entityTypeMap) {
@@ -27,25 +64,25 @@ function Entity() {
         } else if (value instanceof Entity) {
           result = value.copy();
         } else {
-          result = createEntity(value, entityType);
+          result = createObject(value, entityType);
         }
       }
       return result || value;
     }
 
-    function createEntity(data, entityType) {
+    function createObject(data, entityType) {
       var result;
       if (entityType) {
         if(entityType instanceof QNameEntity || typeof(entityType)==='string'){
           entityType = getType(entityType);
         }
         if (typeof(entityType) === "function") { // Entity Constructor
-          result = Entity.create(data, entityType);
+          result = createEntity(data, entityType);
         } else { // {constructor: EntityConstructor, childProperty: ...}
-          result = Entity.create(data, entityType.constructor, entityType);
+          result = createEntity(data, entityType.constructor, entityType);
         }
       } else {
-        result = Entity.create(data);
+        result = createEntity(data);
       }
       return result;
     }
@@ -74,8 +111,7 @@ function Entity() {
   };
   /**
    * Make a copy of this object
-   * @function
-   * @name Entity#copy
+   * @function Entity#copy
    * @returns {Entity}
    */
   this.copy = function () {
@@ -117,6 +153,11 @@ function Entity() {
     //console.log('## ----- Copy', inst);
     return inst;
   };
+  /**
+   * @function Entity#valueOf
+   * @param {number} [depth]
+   * @returns {Object}
+   */
   this.valueOf = function (depth) {
     if (isNaN(depth)) depth = 0;
     var originals = [],
@@ -172,36 +213,3 @@ function Entity() {
     return result;
   };
 }
-
-/**
- * @function
- * @name Entity.create
- * @param {Object} data
- * @param {Function} [constructor]
- * @param {Object} [propertyTypeMap]
- * @return {Entity}
- * @static
- */
-Entity.create = function Entity_create(data, constructor, entityTypeMap) {
-  var instance;
-  if (!constructor) {
-    if (data instanceof Entity) {
-      constructor = data.constructor || data.__proto__.constructor;
-    } else if ("$$constructor" in data && data["$$constructor"]) {
-      try {
-        eval("constructor = window." + data["$$constructor"]);
-      } catch (error) {
-        console.log(error);
-      }
-    }
-  } else if (!Entity.isEntityClass(constructor)) {
-    constructor = Entity.extend(constructor);
-  }
-  if (!constructor) constructor = Entity;
-  instance = new constructor();
-  if (data) {
-    instance.apply(data, entityTypeMap);
-  }
-  //console.log('Entity.create', instance, entityTypeMap);
-  return instance;
-};

@@ -1,10 +1,6 @@
 /**
  * Created by Oleg Galaburda on 20.02.2015.
  */
-//FIXME, try put insights instead of module.config into module.provider, all of these will be available in config state!
-//FIXME directive component will use scope:{param:"=@"} parameter of directive to make all facade properties be availablre to upper level
-//FIXME use prelink function with passed controller, if not possible create instance of facade with try{}catch and in case of error tell that facade must not require anything oncreation phase
-//FIXME directive facade may have directiveArguments property with list of properties being exposed to upper level
 (function (module) {
   function ApplicationController($scope, $timeout) {
     var application = this;

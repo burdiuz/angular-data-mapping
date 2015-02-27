@@ -1,27 +1,56 @@
 /**
  * Created by Oleg Galaburda on 25.02.2015.
  */
-//TODO add factory method generation with definition and type map in closure
 (function () {
-	angular.module('aw.datamapping', []).provider('entityService',
+  angular.module('aw.datamapping', []).provider('entityService',
     /**
      * @namespace EntityServiceProvider
      * @extends EntityServiceSharedInterface
      * @constructor
      */
     function EntityServiceProvider() {
-    EntityServiceSharedInterface.apply(this);
-    this.register = addType;
-    this.setDefaultType = function (constructor) {
-      defaultType = constructor;
-    };
-    this.setDefaultNamespace = function (name) {
-      defaultNamespace = name || '';
-    };
-    this.$get = function EntityServiceFactory() {
-      return new EntityService();
-    };
-  });
+      EntityServiceSharedInterface.apply(this);
+      /**
+       * @function EntityServiceProvider#register
+       * @param {string|QNameEntity} name
+       * @param {Function} constructor
+       * @param {string} [namespace]
+       * @inheritDoc addType
+       * @instance
+       */
+      this.register = function (name, constructor, namespace){
+        addType(name, constructor, namespace);
+      };
+      /**
+       * @function EntityServiceProvider#setDefaultType
+       * @param {Function} constructor
+       * @instance
+       */
+      this.setDefaultType = function (constructor) {
+        defaultType = constructor;
+      };
+      /**
+       * @function EntityServiceProvider#setDefaultNamespace
+       * @param {string} name
+       * @instance
+       */
+      this.setDefaultNamespace = function (name) {
+        defaultNamespace = name || '';
+      };
+      /**
+       * @private
+       * @instance
+       */
+      this.$get =
+        /**
+         * @private
+         * @returns {EntityService}
+         */
+        function EntityServiceFactory() {
+          return new EntityService();
+        };
+    }
+  );
   /**
    * @namespace EntityService
    * @extends EntityServiceSharedInterface
@@ -29,23 +58,55 @@
    */
   function EntityService() {
     EntityServiceSharedInterface.apply(this);
+    /**
+     * @function EntityService#create
+     * @param {string|QNameEntity} name
+     * @param {Object} [data]
+     * @param {Object} [entityTypeMap]
+     * @param [namespace]
+     * @returns {Entity}
+     * @instance
+     */
     this.create = function (name, data, entityTypeMap, namespace) {
       var definition = this.get(name, namespace);
-      return Entity.create(data, definition, entityTypeMap);
+      return createEntity(data, definition, entityTypeMap);
     };
+    /**
+     * @function EntityService#createNew
+     * @param {string|QNameEntity} name
+     * @param [namespace]
+     * @returns {Entity}
+     * @instance
+     */
     this.createNew = function (name, namespace) {
       var definition = this.get(name, namespace);
       return new definition();
     };
+    /**
+     * Method to create factories for Entities, pass data type and Entity Type Map for properties and it will return Entity based on passed data and Entity Type Map.
+     * @function EntityService#factory
+     * @param {string|QNameEntity} name
+     * @param {Object} [entityTypeMap]
+     * @param [namespace]
+     * @returns {Function} Factory method with definition and type map in closure, that accepts only data and returns entity.
+     * @instance
+     */
     this.factory = function (name, entityTypeMap, namespace) {
-      //TODO add verify(instance, skipProperties, additional data types) to verify property types. When first time object of type is created, record its properties types to validate
+      /**
+       * @type {EntityService}
+       */
+      var self = this;
+      return function(data){
+        self.create(name, data, entityTypeMap, namespace);
+      };
     };
     /**
+     * @function EntityService#verify
      * @param {Object} data
-     * @param strict
+     * @returns {boolean|undefined}
      */
-    this.verify = function (data, strict) {
-      //TODO add verify(instance, skipProperties, additional data types) to verify property types. When first time object of type is created, record its properties types to validate
+    this.verify = function (data) {
+      return typeMaps.verify(data);
     };
   }
   /**
@@ -60,37 +121,34 @@
      * @returns {Function}
      * @instance
      */
-    this.extend = function (constructor) {
-      constructor.prototype = new Entity();
-      constructor.prototype.constructor = constructor;
-      return constructor;
-    };
+    this.extend = extend;
     /**
      * @function EntityServiceSharedInterface#isEntity
      * @param {Object} instance
      * @return {boolean}
      * @instance
      */
-    this.isEntity = function (instance) {
-      return instance instanceof Entity;
-    };
+    this.isEntity = isEntity;
     /**
      * @function EntityServiceSharedInterface#isEntityClass
      * @param {Function} constructor
      * @return {boolean}
      * @instance
      */
-    this.isEntityClass = function (constructor) {
-      return constructor instanceof Function && (constructor === Entity || Entity.prototype.isPrototypeOf(constructor.prototype));
-    };
+    this.isEntityClass = isEntityClass;
     /**
      * @function EntityServiceSharedInterface#get
+     * @param {string|QNameEntity} name
+     * @param {string} [namespace]
+     * @returns {Function}
      * @inheritDoc getType
      * @instance
      */
     this.get = getType;
     /**
      * @function EntityServiceSharedInterface#getNamespace
+     * @param {string} name
+     * @returns {EntityNamespace}
      * @inheritDoc getNamespace
      * @instance
      *
@@ -98,7 +156,9 @@
     this.getNamespace = getNamespace;
   }
   /*--shared-*/
+  /*--dictionary-*/
   /*--entity.namespace-*/
+  /*--entity.maps-*/
   /*--entity-*/
   /*--qname.entity-*/
 })();
