@@ -337,52 +337,58 @@ function Entity() {
     }
     return inst;
   };
-  this.valueOf = function (depth) {
+  this.valueOf = function (depth, filterEmpty) {
     if (isNaN(depth)) depth = 0;
     var originals = [],
       values = [],
       result = {},
       param,
       value;
-    function valueOf(value, depth) {
+    function valueOf(value, depth, filterEmpty) {
       var result;
       if (depth >= 0 && value && typeof(value) === "object") {
         if (value instanceof Array) {
-          result = valueOfArray(value, depth ? depth - 1 : 0);
+          result = valueOfArray(value, depth ? depth - 1 : 0, filterEmpty);
         } else {
-          result = valueOfObject(value, depth ? depth - 1 : 0);
+          result = valueOfObject(value, depth ? depth - 1 : 0, filterEmpty);
         }
       } else {
         result = value;
       }
       return result;
     }
-    function valueOfArray(value, depth) {
+    function valueOfArray(value, depth, filterEmpty) {
       var list = [],
         length = value.length,
         index;
       for (index = 0; index < length; index++) {
-        list[index] = valueOf(value[index], depth);
+        list[index] = valueOf(value[index], depth, filterEmpty);
       }
       return list;
     }
-    function valueOfObject(value, depth) {
+    function valueOfObject(value, depth, filterEmpty) {
       var index = originals.indexOf(value),
         result;
       if (index >= 0) {
         result = values[index];
       } else {
         originals.push(value);
-        result = "valueOf" in value ? value.valueOf() : value;
+        if("valueOf" in value && value["valueOf"] instanceof Function){
+          if(value instanceof Entity){
+            result = value.valueOf(depth, filterEmpty);
+          }else{
+            result = value.valueOf();
+          }
+        }else result = value;
         values[index] = result;
       }
       return result;
     }
     for (param in this) {
-      if (param.charAt() === "$") continue;
       value = this[param];
-      if (typeof(value) !== "function" && value !== "" && value !== null && value !== undefined) {
-        result[param] = valueOf(this[param], depth);
+      if (typeof(value) !== "function") {
+        if(filterEmpty && (value === "" || value === null || value === undefined)) continue;
+        result[param] = valueOf(this[param], depth, filterEmpty);
       }
     }
     return result;

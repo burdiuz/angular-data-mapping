@@ -9,7 +9,7 @@
  */
 function Entity() {
   /**
-   * Create property with autocheck for value type in mutator method
+   * Create property with auto-check for value type in mutator method
    * @function Entity#property
    * @param {string} name
    * @param {*} value
@@ -17,6 +17,7 @@ function Entity() {
    * @param {string|Function} valueType
    */
   this.property = function(name, value, readOnly, valueType){
+    //FIXME value can be also GET and SET functions.If value is Function, expect readOnly to be Function or NULL if readonly.
     if(typeof(value)=="undefined" && !valueType) throw new Error("Property must have a default value ot type defined to determine its type.");
     if(!valueType) valueType = value.constructor instanceof Function && value instanceof value.constructor ? value.constructor : typeof(value);
     var descriptor = {
@@ -158,7 +159,7 @@ function Entity() {
    * @param {number} [depth]
    * @returns {Object}
    */
-  this.valueOf = function (depth) {
+  this.valueOf = function (depth, filterEmpty) {
     if (isNaN(depth)) depth = 0;
     var originals = [],
       values = [],
@@ -166,13 +167,13 @@ function Entity() {
       param,
       value;
     // inner function to detect type of property value -- simple or complex
-    function valueOf(value, depth) {
+    function valueOf(value, depth, filterEmpty) {
       var result;
       if (depth >= 0 && value && typeof(value) === "object") {
         if (value instanceof Array) {
-          result = valueOfArray(value, depth ? depth - 1 : 0);
+          result = valueOfArray(value, depth ? depth - 1 : 0, filterEmpty);
         } else {
-          result = valueOfObject(value, depth ? depth - 1 : 0);
+          result = valueOfObject(value, depth ? depth - 1 : 0, filterEmpty);
         }
       } else {
         result = value;
@@ -180,34 +181,41 @@ function Entity() {
       return result;
     }
 
-    function valueOfArray(value, depth) {
+    function valueOfArray(value, depth, filterEmpty) {
       var list = [],
         length = value.length,
         index;
       for (index = 0; index < length; index++) {
-        list[index] = valueOf(value[index], depth);
+        list[index] = valueOf(value[index], depth, filterEmpty);
       }
       return list;
     }
 
-    function valueOfObject(value, depth) {
+    function valueOfObject(value, depth, filterEmpty) {
       var index = originals.indexOf(value),
         result;
       if (index >= 0) {
         result = values[index];
       } else {
         originals.push(value);
-        result = "valueOf" in value ? value.valueOf() : value;
+        if("valueOf" in value && value["valueOf"] instanceof Function){
+          if(value instanceof Entity){
+            result = value.valueOf(depth, filterEmpty);
+          }else{
+            result = value.valueOf();
+          }
+        }else result = value;
         values[index] = result;
       }
       return result;
     }
 
     for (param in this) {
-      if (param.charAt() === "$") continue;
+      //if (param.charAt() == "$") continue;
       value = this[param];
-      if (typeof(value) !== "function" && value !== "" && value !== null && value !== undefined) {
-        result[param] = valueOf(this[param], depth);
+      if (typeof(value) !== "function") {
+        if(filterEmpty && (value === "" || value === null || value === undefined)) continue;
+        result[param] = valueOf(this[param], depth, filterEmpty);
       }
     }
     return result;
