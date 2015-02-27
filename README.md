@@ -74,8 +74,6 @@ if(data instanceof SimpleEntity){
   ...
 ```
 
-
-
 # API
 Service provider `"entityServiceProvider"` to register data entities:
 * **register** (name:String, constructor:Function, namespace:String="") - register class 
@@ -88,15 +86,58 @@ Service provider `"entityServiceProvider"` to register data entities:
  * name - set default namespace for registering and requesting entities. By default, "".
 
 Service `"entityService"` is designed to be used in other services as utility:
-* create (name:String, data:Object=null, entityTypeMap:Object=null, namespace:String=""):Entity
-* createNew (name:String, namespace:String=""):Entity
-* factory (name:String, entityTypeMap:Object, namespace:String="") :Function
-* verify (data:Entity):Boolean|undefined
-Both of `"entityServiceProvider"` and `"entityService"` have shared API methods:
-* extend (constructor:Function):Function
-* isEntity (instance:Object):Boolean
-* isEntityClass (constructor:Function):Boolean
-* get (name:String, namespace:String="")
-* getNamespace (name:String)
+* **create** (name:String, data:Object=null, entityTypeMap:Object=null, namespace:String=""):Entity
+* **createNew** (name:String, namespace:String=""):Entity
+* **factory** (name:String, entityTypeMap:Object, namespace:String="") :Function
+* **verify** (data:Entity):Boolean|undefined
 
+Both of `"entityServiceProvider"` and `"entityService"` have shared API methods:
+* **extend** (constructor:Function):Function - Extend any object by Entity, by extending its prototype chain.
+* **isEntity** (instance:Object):Boolean - Check if object is instance of Entity class.
+* **isEntityClass** (constructor:Function):Boolean - Check if class extends Entity.
+* **get** (name:String, namespace:String="") - Get class function for Entity registered by "name" in namespace "namespace".
+	* name - Name of entity with which it was registered.
+	* namespace - Name of namespace.
+* **getNamespace** (name:String) - Get entity collection saved in namespace "name".
+	* name - Name of namespace.
+
+Each `Entity` after registration being extended with these methods:
+* **property** (name:String, value:*, readOnly:Boolean, valueType:String|Function) - Create property with typecheck for appying values. Will throw an error if type mismatch.
+* **apply** (data:Object, entityTypeMap:Object) - Apply any object to entity and nested entities.
+* **copy** ():Entity - Copy entity with all nested entities.
+* **valueOf** (depth:Number=0, filterEmpty:Boolean=false):Object - Create raw object from entity, skipping methods.
+	* depth - Depth of nested entites to make copies.
+	* filterEmpty - if TRUE, will skip empty strings, `null` and `undefined` not adding them to raw objects.
+
+All entites for one namespace are stored in EntityNamespace collections, you can access them using `entityService.getNamespace(name)`:
+* **name**:String - Namespace identifier, its name
+* **add** (name:String, definition:Function) - Add entity Class to namespace
+* **get** (name:String):Function - Get entity Class from namespace.
+
+#Format of Data Map Object
+
+Data Map Object is used to specify types of nested Entities while creating Entity. To specify children entities, just pass object with properties named exactly as properties where nested entities will be saved, as values use Entity classes.
+```javascript
+{
+	simpleEntityParam: SimpleEntity,
+	otherEntityParam: OtherEntity,
+	content: DocumentEntity,
+	list:UserEntity
+}
+```
+According to this map main entity will expect its field `simpleEntityParam` to be of type `SimpleEntity`, `otherEntityParam` of `OtherEntity`, `content` of `DocumentEntity` and `list` of `UserEntity`. The same rule will be applied to arrays, for example, if field `list` may hold array of objects - class `UserEntity` will be applied to all of them.
+What of child entity should hold other entities? Then you need to replace its Class with nested Data Map Object specifying field `constructor` which will define Class for current object. For example, DocumentEntity must hold HeadEntity, BodyEntity and list of ParagraphEntity:
+```javascript
+{
+	simpleEntityParam: SimpleEntity,
+	otherEntityParam: OtherEntity,
+	content: {
+		constructor: DocumentEntity,
+		head: HeadEntity,
+		body: BodyEntity,
+		paragraphs: ParagraphEntity
+	},
+	list:UserEntity
+}
+```
 > Written with [StackEdit](https://stackedit.io/).
