@@ -16,7 +16,7 @@ Add `aw.datamapping` as dependency for module
 ```javascript
 var module = angular.module("application", ["aw.datamapping"]);
 ```
-use `entityServiceProvider` to configure Data Mapping -- add Entity classes, change defaults. 
+use `"entityServiceProvider"` to configure Data Mapping -- add Entity classes, change defaults. 
 ```javascript
 function SimpleEntity(){
 	this.stringParam = "";
@@ -30,7 +30,7 @@ module.config([
   }
 ]);
 ```
-And `entityService` enjectable for your services.
+And `"entityService"` enjectable for your services.
 ```javascript
 module.service("service", [
   "entityService",
@@ -77,8 +77,8 @@ if(data instanceof SimpleEntity){
 
 
 # API
-Service provider to register data entities:
-* **register** (name:String, constructor:Function, [namespace:String])
+Service provider `"entityServiceProvider"` to register data entities:
+* **register** (name:String, constructor:Function, namespace:String="") - register class 
  * name - Name to assign for entity class
  * constructor - Entity class 
  * namespace - Optional namespace value to register entity into specified namespace. If not defined, default namespace will be used.
@@ -86,5 +86,17 @@ Service provider to register data entities:
  * constructor - Entity class that will be used as default for unknown type or object. By default, Entity.
 * **setDefaultNamespace** (name:String) 
  * name - set default namespace for registering and requesting entities. By default, "".
+
+Service `"entityService"` is designed to be used in other services as utility:
+* create (name:String, data:Object=null, entityTypeMap:Object=null, namespace:String=""):Entity
+* createNew (name:String, namespace:String=""):Entity
+* factory (name:String, entityTypeMap:Object, namespace:String="") :Function
+* verify (data:Entity):Boolean|undefined
+Both of `"entityServiceProvider"` and `"entityService"` have shared API methods:
+* extend (constructor:Function):Function
+* isEntity (instance:Object):Boolean
+* isEntityClass (constructor:Function):Boolean
+* get (name:String, namespace:String="")
+* getNamespace (name:String)
 
 > Written with [StackEdit](https://stackedit.io/).
