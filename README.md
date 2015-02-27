@@ -76,8 +76,8 @@ if(data instanceof SimpleEntity){
 
 # API
 **EntityServiceProvider** - service provider `"entityServiceProvider"` to register data entities:
-* **register** (name:String, constructor:Function, namespace:String="") - register class 
- * name - Name to assign for entity class
+* **register** (name:String|QNameEntity, constructor:Function, namespace:String="") - register class 
+ * name - Name to assign for entity class. Can be String or QNameEntity which holds name of entity and namespace.
  * constructor - Entity class 
  * namespace - Optional namespace value to register entity into specified namespace. If not defined, default namespace will be used.
 * **setDefaultType** (constructor:Function)
