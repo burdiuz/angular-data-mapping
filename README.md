@@ -74,7 +74,17 @@ if(data instanceof SimpleEntity){
   ...
 ```
 
-# API
 
+
+# API
+Service provider to register data entities:
+* **register** (name:String, constructor:Function, [namespace:String])
+ * name - Name to assign for entity class
+ * constructor - Entity class 
+ * namespace - Optional namespace value to register entity into specified namespace. If not defined, default namespace will be used.
+* **setDefaultType** (constructor:Function)
+ * constructor - Entity class that will be used as default for unknown type or object. By default, Entity.
+* **setDefaultNamespace** (name:String) 
+ * name - set default namespace for registering and requesting entities. By default, "".
 
 > Written with [StackEdit](https://stackedit.io/).
