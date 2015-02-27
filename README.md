@@ -75,7 +75,7 @@ if(data instanceof SimpleEntity){
 ```
 
 # API
-Service provider `"entityServiceProvider"` to register data entities:
+**EntityServiceProvider** - service provider `"entityServiceProvider"` to register data entities:
 * **register** (name:String, constructor:Function, namespace:String="") - register class 
  * name - Name to assign for entity class
  * constructor - Entity class 
@@ -85,7 +85,7 @@ Service provider `"entityServiceProvider"` to register data entities:
 * **setDefaultNamespace** (name:String) 
  * name - set default namespace for registering and requesting entities. By default, "".
 
-Service `"entityService"` is designed to be used in other services as utility:
+**EntityService** - service `"entityService"` is designed to be used in other services as utility:
 * **create** (name:String, data:Object=null, entityTypeMap:Object=null, namespace:String=""):Entity
 * **createNew** (name:String, namespace:String=""):Entity
 * **factory** (name:String, entityTypeMap:Object, namespace:String="") :Function
@@ -95,13 +95,13 @@ Both of `"entityServiceProvider"` and `"entityService"` have shared API methods:
 * **extend** (constructor:Function):Function - Extend any object by Entity, by extending its prototype chain.
 * **isEntity** (instance:Object):Boolean - Check if object is instance of Entity class.
 * **isEntityClass** (constructor:Function):Boolean - Check if class extends Entity.
-* **get** (name:String, namespace:String="") - Get class function for Entity registered by "name" in namespace "namespace".
-	* name - Name of entity with which it was registered.
+* **get** (name:String|QNameEntity, namespace:String="") - Get class function for Entity registered by "name" in namespace "namespace".
+	* name - Name of entity with which it was registered. Can be String or QNameEntity which holds name of entity and namespace.
 	* namespace - Name of namespace.
 * **getNamespace** (name:String) - Get entity collection saved in namespace "name".
 	* name - Name of namespace.
 
-Each `Entity` after registration being extended with these methods:
+Each **Entity** after registration being extended with these methods:
 * **property** (name:String, value:*, readOnly:Boolean, valueType:String|Function) - Create property with typecheck for appying values. Will throw an error if type mismatch.
 * **apply** (data:Object, entityTypeMap:Object) - Apply any object to entity and nested entities.
 * **copy** ():Entity - Copy entity with all nested entities.
@@ -109,10 +109,15 @@ Each `Entity` after registration being extended with these methods:
 	* depth - Depth of nested entites to make copies.
 	* filterEmpty - if TRUE, will skip empty strings, `null` and `undefined` not adding them to raw objects.
 
-All entites for one namespace are stored in EntityNamespace collections, you can access them using `entityService.getNamespace(name)`:
+All entites for one namespace are stored in **EntityNamespace** collections, you can access them using `entityService.getNamespace(name)`:
 * **name**:String - Namespace identifier, its name
 * **add** (name:String, definition:Function) - Add entity Class to namespace
-* **get** (name:String):Function - Get entity Class from namespace.
+* **get** (name:String|QNameEntity):Function - Get entity Class from namespace. Can be String or QNameEntity which holds name of entity and namespace.
+
+**QNameEntity** - Special Entity that can be accessed by name "QName" in default namespace, can be used as name for other entities, holds name of entity and namespace.
+	* **QNameEntity** (localName:String, uri:String="") - QNameEntity constructor, accepts name of entity and namespace as arguments.
+	* **localName**:String - Name of entity to register or request it.
+	* **uri**:String - Namespace where entity stored.
 
 #Format of Data Map Object
 
@@ -140,4 +145,5 @@ What of child entity should hold other entities? Then you need to replace its Cl
 	list:UserEntity
 }
 ```
+
 > Written with [StackEdit](https://stackedit.io/).
