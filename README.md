@@ -115,9 +115,9 @@ All entites for one namespace are stored in **EntityNamespace** collections, you
 * **get** (name:String|QNameEntity):Function - Get entity Class from namespace. Can be String or QNameEntity which holds name of entity and namespace.  
 
 **QNameEntity** - Special Entity that can be accessed by name "QName" in default namespace, can be used as name for other entities, holds name of entity and namespace.
-	* **QNameEntity** (localName:String, uri:String="") - QNameEntity constructor, accepts name of entity and namespace as arguments.
-	* **localName**:String - Name of entity to register or request it.
-	* **uri**:String - Namespace where entity stored.
+* **QNameEntity** (localName:String, uri:String="") - QNameEntity constructor, accepts name of entity and namespace as arguments.
+* **localName**:String - Name of entity to register or request it.
+* **uri**:String - Namespace where entity stored.
 
 #Format of Data Map Object
 
