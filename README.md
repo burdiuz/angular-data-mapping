@@ -146,4 +146,8 @@ What of child entity should hold other entities? Then you need to replace its Cl
 }
 ```
 
+#Runtime type check
+First time when entity of certain type is created, framework saves map of types for this entity. Later you can use it to check if all properties hold data of proper types.  Saving type maps is automatic, to check object you should use `entityService.verify()` method.
+
+
 > Written with [StackEdit](https://stackedit.io/).
