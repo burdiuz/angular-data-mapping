@@ -130,7 +130,7 @@ Data Map Object is used to specify types of nested Entities while creating Entit
 	list:UserEntity
 }
 ```
-According to this map main entity will expect its field `simpleEntityParam` to be of type `SimpleEntity`, `otherEntityParam` of `OtherEntity`, `content` of `DocumentEntity` and `list` of `UserEntity`. The same rule will be applied to arrays, for example, if field `list` may hold array of objects - class `UserEntity` will be applied to all of them.
+According to this map main entity will expect its field `simpleEntityParam` to be of type `SimpleEntity`, `otherEntityParam` of `OtherEntity`, `content` of `DocumentEntity` and `list` of `UserEntity`. The same rule will be applied to arrays, for example, if field `list` may hold array of objects - class `UserEntity` will be applied to all of them.  
 What of child entity should hold other entities? Then you need to replace its Class with nested Data Map Object specifying field `constructor` which will define Class for current object. For example, DocumentEntity must hold HeadEntity, BodyEntity and list of ParagraphEntity:
 ```javascript
 {
