@@ -2,9 +2,9 @@
 Simple Data Mapping framework for [AngularJS](https://angularjs.org/). Convert raw JSON data into collections of registered Entity classes. That makes better picture of what data you manipulate and injection of additional tools, like apply() and copy() Entity methods. Having classes of objects helps in development allowing [JSDoc](http://usejsdoc.org/) with context help in modern [IDEs](http://www.jetbrains.com/webstorm/).
 
 # Installation
-You can clone repository 
-> git clone git://github.com/burdiuz/angular-data-mapping.git
-or use bower:
+You can clone repository  
+> git clone git://github.com/burdiuz/angular-data-mapping.git  
+or use bower:  
 > bower install angular-data-mapping
 
 # Adding to AngularJS project
