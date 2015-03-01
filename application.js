@@ -2,20 +2,71 @@
  * Created by Oleg Galaburda on 20.02.2015.
  */
 (function (module) {
-  function ApplicationController($scope) {
-    var application = this;
-    application.label = "Hello world!";
+  /**
+   * @namespace SimpleEntity
+   * @constructor
+   */
+  function SimpleEntity() {
+    /**
+     * @property SimpleEntity#stringParam
+     * @type {string}
+     */
+    this.stringParam = "";
+    /**
+     * @property SimpleEntity#boolParam
+     * @type {boolean}
+     */
+    this.boolParam = false;
+    /**
+     * @property SimpleEntity#numberParam
+     * @type {Number}
+     */
+    this.numberParam = NaN;
   }
 
-  module.controller('aw.Application', [
-    '$scope',
-    ApplicationController
-  ]);
-
-  module.service('test', [
-    'entityService',
-    function TestService(entityService){
-      
+  module.config([
+    "entityServiceProvider",
+    function (entityServiceProvider) {
+      entityServiceProvider.register("simple", SimpleEntity);
     }
   ]);
-})(angular.module('aw.Application', ['aw.datamapping']));
+  module.service("service", [
+    "entityService",
+    /**
+     * @namespace Service
+     * @param {EntityService} entityService
+     * @constructor
+     */
+    function Service(entityService) {
+      /**
+       * @function Service#getData
+       * @param {Object} data
+       * @returns {SimpleEntity}
+       */
+      this.getData = function (data) {
+        // instead of data argument can be data received from server
+        return entityService.create("simple", data);
+      }
+    }
+  ]);
+  module.controller("Application", [
+    "service",
+    function ApplicationController(service) {
+      /**
+       * @type {SimpleEntity}
+       */
+      this.data;
+      // lets receive empty object from service
+      this.data = service.getData({});
+      console.log(this.data);
+      // lets receive ordinary object from service
+      this.data = service.getData({
+        stringParam: "Any String here",
+        boolParam: true,
+        numberParam: 3.14
+      });
+      console.log(this.data);
+      console.log(this.data instanceof SimpleEntity, this.data instanceof Entity);
+    }
+  ]);
+})(angular.module("application", ["aw.datamapping"]));

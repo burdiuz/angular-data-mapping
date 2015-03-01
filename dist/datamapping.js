@@ -1,4 +1,3 @@
-
 (function () {
   angular.module('aw.datamapping', []).provider('entityService',
     function EntityServiceProvider() {
@@ -86,8 +85,8 @@ function createEntity(data, constructor, entityTypeMap) {
         throw new Error('Entity class "'+data["$constructor"]+'" is not defined.');
       }
     }
-  } else if (!Entity.isEntityClass(constructor)) {
-    constructor = Entity.extend(constructor);
+  } else if (!isEntityClass(constructor)) {
+    constructor = extend(constructor);
   }
   if (!constructor) constructor = Entity;
   instance = new constructor();
@@ -394,6 +393,7 @@ function Entity() {
     return result;
   };
 }
+window.Entity = Entity;
 function QNameEntity(name, uri) {
   this.localName = name ? String(name) : '';
   this.uri = uri ? String(uri) : '';

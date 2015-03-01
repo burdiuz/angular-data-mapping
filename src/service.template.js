@@ -1,8 +1,6 @@
-/**
- * Created by Oleg Galaburda on 25.02.2015.
- */
 (function () {
-  angular.module('aw.datamapping', []).provider('entityService',
+  var module = angular.module('aw.datamapping', []);
+  module.provider('entityService',
     /**
      * @namespace EntityServiceProvider
      * @extends EntityServiceSharedInterface
@@ -125,6 +123,7 @@
     /**
      * @function EntityServiceSharedInterface#isEntity
      * @param {Object} instance
+     * @param {string|QNameEntity} name
      * @return {boolean}
      * @instance
      */
@@ -161,4 +160,11 @@
   /*--entity.maps-*/
   /*--entity-*/
   /*--qname.entity-*/
+  module.config([
+    'entityServiceProvider',
+    function(entityServiceProvider){
+      entityServiceProvider.register('Entity', Entity);
+      entityServiceProvider.register('QName', QNameEntity);
+    }
+  ]);
 })();

@@ -1,5 +1,4 @@
 /**
- * Created by Oleg Galaburda on 25.02.2015.
  * @exports Entity
  */
 /**
@@ -28,16 +27,20 @@ function Entity() {
     };
     if(!readOnly){
       if(typeof(valueType)=="string") descriptor.set = mutator_type;
-      else descriptor.set = mutator_class;
+      else if(valueType) descriptor.set = mutator_class;
+      else descriptor.set = mutator_nocheck;
     }
     Object.defineProperty(this, name, descriptor);
-    function mutator_type(newValue){
-      if(typeof(newValue)==valueType){
+      function mutator_nocheck(newValue){
         value = newValue;
-      }else{
-        throw new Error('Property "'+name+'" value must be of "'+valueType+'" type, "'+typeof(newValue)+'" passed.');
       }
-    }
+      function mutator_type(newValue){
+        if(typeof(newValue)==valueType){
+          value = newValue;
+        }else{
+          throw new Error('Property "'+name+'" value must be of "'+valueType+'" type, "'+typeof(newValue)+'" passed.');
+        }
+      }
     function mutator_class(newValue){
       if(newValue instanceof valueType){
         value = newValue;
@@ -52,6 +55,12 @@ function Entity() {
    * @param {Object} data
    * @param {Object} entityTypeMap Entity map is a hash object with propertyName: EntityConstructor or propertyName:{constructor:EntityConstructor, childProperty: ...}
    * @instance
+   */
+  /*TODO check possibility to apply Entity class to custom objects via replacing __proto__ & constructor values.
+    Instead of creating Entity and applying properties to it, might be faster if create Entity and apply it to object
+    object.__proto__ = new Entity;
+    object.constructor = Entity;
+    but still its required to check nested objects to make them Entities. this can be done via requirement of dataMapObjects for nested objects.
    */
   this.apply = function (data, entityTypeMap) {
     var self = this,
@@ -221,3 +230,4 @@ function Entity() {
     return result;
   };
 }
+window.Entity = Entity;

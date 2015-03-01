@@ -1,5 +1,4 @@
 /**
- * Created by Oleg Galaburda on 26.02.2015.
  * @exports EntityMaps
  */
 /**
@@ -8,6 +7,7 @@
  */
 function EntityMaps(){
   var maps = new Dictionary();
+  //TODO #propertyTypes = add support for registered string names and QNameEntities
   /**
    * @function EntityMaps#create
    * @param {Object} object

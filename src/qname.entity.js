@@ -1,5 +1,4 @@
 /**
- * Created by Oleg Galaburda on 25.02.2015.
  * @exports QNameEntity
  */
 /**
@@ -14,12 +13,11 @@ function QNameEntity(name, uri) {
    * @name QNameEntity#localName
    * @type {string}
    */
-  this.localName = name ? String(name) : '';
+  this.localName = name===undefined ? '' : String(name);
   /**
    * @property
    * @name QNameEntity#uri
    * @type {string}
    */
-  this.uri = uri ? String(uri) : '';
+  this.uri = uri===undefined ? '' : String(uri);
 }
-addType('QName', QNameEntity);

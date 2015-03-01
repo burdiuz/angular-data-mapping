@@ -1,5 +1,4 @@
 /**
- * Created by Oleg Galaburda on 25.02.2015.
  * @exports addType
  * @exports getType
  * @exports getNamespace
@@ -87,8 +86,8 @@ function createEntity(data, constructor, entityTypeMap) {
         throw new Error('Entity class "'+data["$$constructor"]+'" is not defined.');
       }
     }
-  } else if (!Entity.isEntityClass(constructor)) {
-    constructor = Entity.extend(constructor);
+  } else if (!isEntityClass(constructor)) {
+    constructor = extend(constructor);
   }
   if (!constructor) constructor = Entity;
   instance = new constructor();
@@ -96,7 +95,7 @@ function createEntity(data, constructor, entityTypeMap) {
   if (data) {
     instance.apply(data, entityTypeMap);
   }
-  //console.log('Entity.create', instance, entityTypeMap);
+  //console.log('create', instance, entityTypeMap);
   return instance;
 }
 /**
@@ -112,9 +111,13 @@ function extend(constructor) {
 /**
  * @function isEntity
  * @param {Object} instance
+ * @param {string|QNameEntity} name
  * @return {boolean}
  */
-function isEntity(instance) {
+function isEntity(instance, name) {
+  if(name){
+    return instance instanceof getType(name);
+  }
   return instance instanceof Entity;
 }
 /**

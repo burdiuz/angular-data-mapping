@@ -1,5 +1,4 @@
 /**
- * Created by Oleg Galaburda on 25.02.2015.
  * @exports EntityNamespace
  */
 /**
