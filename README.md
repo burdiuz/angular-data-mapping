@@ -4,6 +4,7 @@ Simple Data Mapping framework for [AngularJS](https://angularjs.org/). Convert r
 # Installation
 You can clone repository  
 > git clone git://github.com/burdiuz/angular-data-mapping.git
+
 or use bower:  
 > bower install angular-data-mapping
 
