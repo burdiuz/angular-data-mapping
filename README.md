@@ -1,14 +1,10 @@
 # angular-data-mapping
 Simple Data Mapping framework for [AngularJS](https://angularjs.org/). Convert raw JSON data into collections of registered Entity classes. That makes better picture of what data you manipulate and injection of additional tools, like apply() and copy() Entity methods. Having classes of objects helps in development allowing [JSDoc](http://usejsdoc.org/) with context help in modern [IDEs](http://www.jetbrains.com/webstorm/).
-To sum up, with this Data Mapping implementation you have:
- * Context help for received JSON data
- * Less typos for object fields
- * Injectable utility methods
- * Initialized fields with default values
- * Self explained logs of data objects
 
 # Installation
-You can clone repository or use bower:
+You can clone repository 
+> git clone git://github.com/burdiuz/angular-data-mapping.git
+or use bower:
 > bower install angular-data-mapping
 
 # Adding to AngularJS project
@@ -74,6 +70,9 @@ if(data instanceof SimpleEntity){
   ...
 ```
 
+# Data Mapping Simplier
+
+
 # API
 **EntityServiceProvider** - service provider `"entityServiceProvider"` to register data entities:
 * **register** (name:String|QNameEntity, constructor:Function, namespace:String="") - register class 
@@ -86,15 +85,18 @@ if(data instanceof SimpleEntity){
  * name - set default namespace for registering and requesting entities. By default, "".
 
 **EntityService** - service `"entityService"` is designed to be used in other services as utility:
-* **create** (name:String, data:Object=null, entityTypeMap:Object=null, namespace:String=""):Entity
-* **createNew** (name:String, namespace:String=""):Entity
-* **factory** (name:String, entityTypeMap:Object, namespace:String="") :Function
-* **verify** (data:Entity):Boolean|undefined
+* **create** (name:String, data:Object=null, entityTypeMap:Object=null, namespace:String=""):Entity - Create new Entity instance applying data to it after creation.
+* **createNew** (name:String, namespace:String=""):Entity - Create new Entity instance with defaults.
+* **factory** (name:String, entityTypeMap:Object, namespace:String="") :Function - Create a factory function for Entity `name` with data map `entityTypeMap`. Created function will accept one argument -- data that should be applied to newly created Entity instance.
+* **verify** (data:Entity):Boolean|undefined - Every first time when Entity of specific type is created, `angular-data-map` reads data map from its properties, so later using this method you can check if instance of Entity has proper types of values in its fields. If `undefined` returned, that means type map was not found.
 
 Both of `"entityServiceProvider"` and `"entityService"` have shared API methods:
 * **extend** (constructor:Function):Function - Extend any object by Entity, by extending its prototype chain.
-* **isEntity** (instance:Object):Boolean - Check if object is instance of Entity class.
+* **isEntity** (instance:Object, name:String|QNameEntity):Boolean - Check if object is instance of Entity class.
+	* instance - Any object you want to check if its an instance of Entity class.
+	*  name - Name or QNameEntity representing name of specific Entity type you want to check against.
 * **isEntityClass** (constructor:Function):Boolean - Check if class extends Entity.
+	* constructor - Class constructor function you want to check.
 * **get** (name:String|QNameEntity, namespace:String="") - Get class function for Entity registered by "name" in namespace "namespace".
 	* name - Name of entity with which it was registered. Can be String or QNameEntity which holds name of entity and namespace.
 	* namespace - Name of namespace.
@@ -102,8 +104,14 @@ Both of `"entityServiceProvider"` and `"entityService"` have shared API methods:
 	* name - Name of namespace.
 
 Each **Entity** after registration being extended with these methods:
-* **property** (name:String, value:*, readOnly:Boolean, valueType:String|Function) - Create property with typecheck for appying values. Will throw an error if type mismatch.
-* **apply** (data:Object, entityTypeMap:Object) - Apply any object to entity and nested entities.
+* **property** (name:String, value:*, readOnly:Boolean, valueType:String|Function) - Wrapper for `Object.defineProperty`, create property with typecheck for appying values. Will throw an error if type mismatch. 
+	* name - Property name.
+	* value - Default value for property
+	* readOnly - If TRUE, will be read-only property
+	* valueType - Type of the value. If specified, mutator function will do type check and throw error if applied value has other type.
+* **apply** (data:Object, entityTypeMap:Object=null) - Apply any object to entity and nested entities.
+	* data - Data object to be applied to current Entity. All properties will be copied even if they were never defined in Entity.
+	* entityTypeMap - Entity type map to be applied for nested objects.
 * **copy** ():Entity - Copy entity with all nested entities.
 * **valueOf** (depth:Number=0, filterEmpty:Boolean=false):Object - Create raw object from entity, skipping methods.
 	* depth - Depth of nested entites to make copies.
@@ -112,7 +120,10 @@ Each **Entity** after registration being extended with these methods:
 All entites for one namespace are stored in **EntityNamespace** collections, you can access them using `entityService.getNamespace(name)`:
 * **name**:String - Namespace identifier, its name
 * **add** (name:String, definition:Function) - Add entity Class to namespace
-* **get** (name:String|QNameEntity):Function - Get entity Class from namespace. Can be String or QNameEntity which holds name of entity and namespace.  
+	* name - Name of entity type to add to namespace
+	* definition - Class function if the entity.
+* **get** (name:String):Function - Get entity Class from namespace. Can be String or QNameEntity which holds name of entity and namespace.  
+	* name - Name of entity type to get class function
 
 **QNameEntity** - Special Entity that can be accessed by name "QName" in default namespace, can be used as name for other entities, holds name of entity and namespace.
 * **QNameEntity** (localName:String, uri:String="") - QNameEntity constructor, accepts name of entity and namespace as arguments.
@@ -130,7 +141,26 @@ Data Map Object is used to specify types of nested Entities while creating Entit
 	list:UserEntity
 }
 ```
-According to this map main entity will expect its field `simpleEntityParam` to be of type `SimpleEntity`, `otherEntityParam` of `OtherEntity`, `content` of `DocumentEntity` and `list` of `UserEntity`. The same rule will be applied to arrays, for example, if field `list` may hold array of objects - class `UserEntity` will be applied to all of them.  
+According to this map main entity will expect its field `simpleEntityParam` to be of type `SimpleEntity`, `otherEntityParam` of `OtherEntity`, `content` of `DocumentEntity` and `list` of `UserEntity`. The same rule will be applied to arrays, for example, if field `list` may hold array of objects - class `UserEntity` will be applied to all of them.   
+Sometimes Entity classes might not be accessible(hidden in a closure?), so for Data Maps with Class constructors you also can use QNameEntity or Strings names of types registered using `entityServiceProvider` or `EntityNamespace`:
+```javascript
+//register some entities
+module.config([
+  "entityServiceProvider",
+  function(entityServiceProvider){
+    entityServiceProvider.register("simple", SimpleEntity);
+    entityServiceProvider.register("document", DocumentEntity);
+    entityServiceProvider.register("other", OtherEntity);
+  }
+]);
+//then use names in map
+{
+	simpleEntityParam: "simple",
+	otherEntityParam: new QNameEntity("other", ""),
+	content: "document",
+	list:UserEntity
+}
+```
 What if child entity should hold other entities? Then you need to replace its Class with nested Data Map Object specifying field `constructor` which will define Class for current object. For example, DocumentEntity must hold HeadEntity, BodyEntity and list of ParagraphEntity:
 ```javascript
 {
