@@ -89,6 +89,8 @@ function createEntity(data, constructor, entityTypeMap) {
         throw new Error('Entity class "'+data["$$constructor"]+'" is not defined.');
       }
     }
+  }else if(typeof(constructor)!=="function"){
+    constructor = getType(constructor);
   }
   if(constructor) {
     if(!isEntityClass(constructor)) constructor = extend(constructor);

@@ -79,6 +79,22 @@ describe('Shared components test', function () {
     expect(entity).not.toBe(otherEntity);
     expect(otherEntity instanceof window.test.TestGlobalClass).toBe(true);
   });
+  it('Create Entity string/QNameEntity', function () {
+    function Type1(){
+
+    }
+    addType('typeCA1', Type1);
+    expect(createEntity({
+      param1: "value", param2: 15, param3: true
+    }, 'typeCA1') instanceof Type1).toBe(true);
+    function Type2(){
+
+    }
+    addType(new QNameEntity('typeCA2', 'nsa'), Type2);
+    expect(createEntity({
+      param1: "value", param2: 15, param3: true
+    }, new QNameEntity('typeCA2', 'nsa')) instanceof Type2).toBe(true);
+  });
   it('Extend Class constructor with Entity', function () {
     var constructor = function () {
     };
