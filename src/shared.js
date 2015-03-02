@@ -83,7 +83,7 @@ function createEntity(data, constructor, entityTypeMap) {
       constructor = data.constructor || data.__proto__.constructor;
     } else if ("$$constructor" in data && data["$$constructor"]) {
       try {
-        eval("constructor = window." + data["$$constructor"]);
+        eval("try{ constructor = window." + data["$$constructor"] + "; }catch(error){}");
       } catch (error) {
         console.log(error);
         throw new Error('Entity class "'+data["$$constructor"]+'" is not defined.');
