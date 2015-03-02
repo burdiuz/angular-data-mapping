@@ -27,4 +27,7 @@
     "karma-firefox-launcher": "^0.1.4",
     "karma-coverage": "^0.2.7"
   }
+},
+"scripts": {
+   "test": "./node_modules/.bin/karma start --single-run --browsers PhantomJS"
 }
