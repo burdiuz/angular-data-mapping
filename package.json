@@ -1,7 +1,7 @@
 {
   "name": "angular-data-mapping",
   "description": "Data mapping framework allowing conversion of raw Objects into instances of specified classes",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "dependencies": {
     "express": ">0.1.9"
   },
