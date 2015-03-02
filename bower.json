@@ -10,10 +10,16 @@
   "license": "MIT",
   "ignore": [
     "**/.*",
+	"src",
     "examples",
     "tests",
     "node_modules",
-    "bower_components"
+    "bower_components",
+	"application.js",
+	"gulpfile.js",
+	"index.html",
+	"karma.conf.js",
+	"package.json"
   ],
   "keywords": [
     "angular",
