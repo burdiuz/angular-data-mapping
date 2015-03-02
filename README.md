@@ -1,5 +1,4 @@
 # angular-data-mapping
-=================================
 [![Build Status](https://travis-ci.org/burdiuz/angular-data-mapping.svg?branch=master)](https://travis-ci.org/burdiuz/angular-data-mapping)
 [![Coverage Status](https://coveralls.io/repos/burdiuz/angular-data-mapping/badge.svg?branch=master)](https://coveralls.io/r/burdiuz/angular-data-mapping?branch=master)
 [![Bower version](https://badge.fury.io/bo/angular-data-mapping.svg)](http://badge.fury.io/bo/angular-data-mapping)
