@@ -18,6 +18,7 @@ module.exports = function(config) {
       {pattern: 'bower_components/jquery/dist/jquery.js', watched: false},
       {pattern: 'bower_components/bootstrap/dist/js/bootstrap.js', watched: false},
       {pattern: 'bower_components/angular/angular.js', watched: false},
+	  {pattern: 'bower_components/angular-mocks/angular-mocks.js', watched: false},
       'src/*.js',
       'tests/*.js'
     ],

@@ -4,7 +4,7 @@
 /**
  * @namespace QNameEntity
  * @param {string} [name]
- * @param {string} [namespace]
+ * @param {string} [uri]
  * @constructor
  */
 function QNameEntity(name, uri) {
@@ -13,11 +13,11 @@ function QNameEntity(name, uri) {
    * @name QNameEntity#localName
    * @type {string}
    */
-  this.localName = name===undefined ? '' : String(name);
+  this.localName = name === undefined ? '' : String(name);
   /**
    * @property
    * @name QNameEntity#uri
    * @type {string}
    */
-  this.uri = uri===undefined ? '' : String(uri);
+  this.uri = uri === undefined ? '' : String(uri);
 }

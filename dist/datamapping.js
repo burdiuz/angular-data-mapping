@@ -1,5 +1,6 @@
 (function () {
-  angular.module('aw.datamapping', []).provider('entityService',
+  var module = angular.module('aw.datamapping', []);
+  module.provider('entityService',
     function EntityServiceProvider() {
       EntityServiceSharedInterface.apply(this);
       this.register = function (name, constructor, namespace){
@@ -30,7 +31,7 @@
     this.factory = function (name, entityTypeMap, namespace) {
       var self = this;
       return function(data){
-        self.create(name, data, entityTypeMap, namespace);
+        return self.create(name, data, entityTypeMap, namespace);
       };
     };
     this.verify = function (data) {
@@ -50,15 +51,18 @@ var defaultNamespace = '';
 var typeMaps = new EntityMaps();
 function addType(name, constructor, namespace) {
   if (name instanceof QNameEntity) {
-    namespace = name.localName;
-    name = name.uri;
+    namespace = name.uri;
+    name = name.localName;
+  }
+  if(!isEntityClass(constructor)){
+    constructor = extend(constructor);
   }
   getNamespace(namespace).add(name, constructor);
 }
 function getType(name, namespace) {
   if (name instanceof QNameEntity) {
-    namespace = name.localName;
-    name = name.uri;
+    namespace = name.uri;
+    name = name.localName;
   }
   return getNamespace(namespace).get(name);
 }
@@ -85,10 +89,10 @@ function createEntity(data, constructor, entityTypeMap) {
         throw new Error('Entity class "'+data["$constructor"]+'" is not defined.');
       }
     }
-  } else if (!isEntityClass(constructor)) {
-    constructor = extend(constructor);
   }
-  if (!constructor) constructor = Entity;
+  if(constructor) {
+    if(!isEntityClass(constructor)) constructor = extend(constructor);
+  }else constructor = Entity;
   instance = new constructor();
   typeMaps.create(instance);
   if (data) {
@@ -101,7 +105,10 @@ function extend(constructor) {
   constructor.prototype.constructor = constructor;
   return constructor;
 }
-function isEntity(instance) {
+function isEntity(instance, name) {
+  if(name){
+    return instance instanceof getType(name);
+  }
   return instance instanceof Entity;
 }
 function isEntityClass(constructor) {
@@ -111,8 +118,14 @@ function Dictionary() {
   var keys;
   var values;
   this.add = function (key, value) {
-    keys.push(key);
-    values.push(value);
+    if(key!==key) {
+      throw new Error('Key cannot be NaN.');
+    }else if(this.has(key)) {
+      throw new Error('Key must be unique.');
+    }else{
+      keys.push(key);
+      values.push(value);
+    }
   };
   this.get = function (key) {
     var index = keys.indexOf(key);
@@ -124,9 +137,9 @@ function Dictionary() {
   };
   this.getAllKeys = function (value) {
     var list = [],
-      index = -1;
+      index = 0;
     while((index = values.indexOf(value, index))>=0){
-      list.push(values[index]);
+      list.push(keys[index]);
       index++;
     }
     return list;
@@ -145,6 +158,11 @@ function Dictionary() {
     keys = [];
     values = [];
   };
+  Object.defineProperty(this, "length", {
+    get: function(){
+      return keys.length;
+    }
+  });
   this.clear();
 }
 function EntityNamespace(name) {
@@ -162,30 +180,31 @@ function EntityNamespace(name) {
   };
   this.get = function (name) {
     var definition;
-    name = name || defaultType;
     if (definitions.hasOwnProperty(name) && definitions[name] instanceof Function) {
       definition = definitions[name];
-    } else {
+    } else if(defaultType) {
+      definition = defaultType;
+    }else{
       throw new Error('EntityNamespace "' + this.name + '" does not have entity with name "' + name + '".');
     }
     return definition;
   };
 }
-function EntityMaps(){
+function EntityMaps() {
   var maps = new Dictionary();
-  this.create = function(object, propertyTypes){
+  this.create = function (object, propertyTypes) {
     var map;
     var definition = getDefinition(object);
     map = maps.get(definition);
-    if(!map){
+    if (!map) {
       map = {};
       for (var param in object) {
         if (object.hasOwnProperty(param) && typeof(object[param]) != "function") {
-          if(propertyTypes && propertyTypes.hasOwnProperty(param)){
+          if (propertyTypes && propertyTypes.hasOwnProperty(param)) {
             map[param] = propertyTypes[param];
-          }else {
+          } else {
             var value = object[param];
-            if (value !== undefined) {
+            if (value !== undefined && value !== null) {
               map[param] = value.constructor instanceof Function && value instanceof value.constructor ? value.constructor : typeof(value);
             }
           }
@@ -195,30 +214,32 @@ function EntityMaps(){
     }
     return map;
   };
-  this.has = function(object){
+  this.has = function (object) {
     return maps.has(getDefinition(object));
   };
-  this.hasDefinition = function(definition){
+  this.hasDefinition = function (definition) {
     return maps.has(definition);
   };
-  this.verify = function(object, deep){
+  this.verify = function (object, deep) {
     var map = maps.get(getDefinition(object));
-    if(!map) return undefined;
+    if (!map) return undefined;
     var result = true;
-      for (var param in map) {
-        if (!map.hasOwnProperty(param)) continue;
-        var valueType = map[param];
-        console.log(param, valueType);
-        if(typeof(valueType)=="string"){
-          result = typeof(object[param]) == valueType;
-        }else{
-          result = object[param] instanceof valueType;
-        }
-        if(!result) break;
+    for (var param in map) {
+      if (!map.hasOwnProperty(param)) continue;
+      var value = object[param];
+      var valueType = map[param];
+      if (typeof(valueType) == "string") {
+        result = typeof(value) == valueType;
+      } else if (value !== undefined && value !== null && value.constructor) {
+        result = value.constructor === valueType;
+      } else {
+        result = value instanceof valueType;
       }
+      if (!result) break;
+    }
     return result;
   };
-  function getDefinition(object){
+  function getDefinition(object) {
     return object.constructor instanceof Function ? object.constructor : object.__proto__.constructor;
   }
 }
@@ -232,18 +253,27 @@ function Entity() {
       },
       enumerable: true
     };
-    if(!readOnly){
+    if(readOnly) {
+      descriptor.set = mutator_readonly;
+    }else{
       if(typeof(valueType)=="string") descriptor.set = mutator_type;
-      else descriptor.set = mutator_class;
+      else if(valueType) descriptor.set = mutator_class;
+      else descriptor.set = mutator_nocheck;
     }
     Object.defineProperty(this, name, descriptor);
-    function mutator_type(newValue){
-      if(typeof(newValue)==valueType){
-        value = newValue;
-      }else{
-        throw new Error('Property "'+name+'" value must be of "'+valueType+'" type, "'+typeof(newValue)+'" passed.');
-      }
+    function mutator_readonly(newValue){
+      throw new Error('Property "'+name+'" is read only and cannot be changed.');
     }
+    function mutator_nocheck(newValue){
+      value = newValue;
+    }
+      function mutator_type(newValue){
+        if(typeof(newValue)==valueType){
+          value = newValue;
+        }else{
+          throw new Error('Property "'+name+'" value must be of "'+valueType+'" type, "'+typeof(newValue)+'" passed.');
+        }
+      }
     function mutator_class(newValue){
       if(newValue instanceof valueType){
         value = newValue;
@@ -314,6 +344,8 @@ function Entity() {
           result = copyArray(value);
         } else if (value instanceof Entity) {
           result = value.copy();
+        }else{
+          result = angular.copy(value);
         }
       }
       return result;
@@ -395,8 +427,14 @@ function Entity() {
 }
 window.Entity = Entity;
 function QNameEntity(name, uri) {
-  this.localName = name ? String(name) : '';
-  this.uri = uri ? String(uri) : '';
+  this.localName = name === undefined ? '' : String(name);
+  this.uri = uri === undefined ? '' : String(uri);
 }
-addType('QName', QNameEntity);
+  module.config([
+    'entityServiceProvider',
+    function(entityServiceProvider){
+      entityServiceProvider.register('Entity', Entity);
+      entityServiceProvider.register('QName', QNameEntity);
+    }
+  ]);
 })();

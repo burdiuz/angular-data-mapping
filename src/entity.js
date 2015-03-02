@@ -25,15 +25,20 @@ function Entity() {
       },
       enumerable: true
     };
-    if(!readOnly){
+    if(readOnly) {
+      descriptor.set = mutator_readonly;
+    }else{
       if(typeof(valueType)=="string") descriptor.set = mutator_type;
       else if(valueType) descriptor.set = mutator_class;
       else descriptor.set = mutator_nocheck;
     }
     Object.defineProperty(this, name, descriptor);
-      function mutator_nocheck(newValue){
-        value = newValue;
-      }
+    function mutator_readonly(newValue){
+      throw new Error('Property "'+name+'" is read only and cannot be changed.');
+    }
+    function mutator_nocheck(newValue){
+      value = newValue;
+    }
       function mutator_type(newValue){
         if(typeof(newValue)==valueType){
           value = newValue;
@@ -137,6 +142,9 @@ function Entity() {
           result = copyArray(value);
         } else if (value instanceof Entity) {
           result = value.copy();
+        }else{
+          //TODO Might be throwing error instead, because in this case nested Entity objects will become ordinary objects.
+          result = angular.copy(value);
         }
       }
       return result;

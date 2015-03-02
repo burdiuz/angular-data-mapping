@@ -95,7 +95,7 @@
        */
       var self = this;
       return function(data){
-        self.create(name, data, entityTypeMap, namespace);
+        return self.create(name, data, entityTypeMap, namespace);
       };
     };
     /**

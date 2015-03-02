@@ -32,7 +32,7 @@ describe('Shared components test', function () {
   });
   it('Add type by string names', function () {
     expect(addType('type1', Type1InDefNS, '')).toBeUndefined();
-    expect(addType('type1', Type1InNS, 'ns1')).toBeUndefined();
+    expect(addType('type1', Type1InNS, 'ns')).toBeUndefined();
   });
   it('Add type by QNameEntity', function () {
     expect(addType(new QNameEntity('type2'), Type2InDefNS)).toBeUndefined();
@@ -45,25 +45,45 @@ describe('Shared components test', function () {
     expect(getNamespace('not_created_yet_ns') instanceof  EntityNamespace).toBe(true);
   });
   it('Get type by string names', function () {
-    expect(getType('type1') instanceof Entity).toBe(true);
-    expect(getType('type1', 'ns') instanceof Entity).toBe(true);
+    expect(getType('type1')).toBe(Type1InDefNS);
+    expect(getType('type1', 'ns')).toBe(Type1InNS);
     expect(getType('type1') === getType('type1', 'ns')).toBe(false);
-    expect(getType('type2') instanceof Entity).toBe(true);
+    expect(getType('type2')).toBe(Type2InDefNS);
     expect(getType('type1') === getType('type2')).toBe(false);
   });
   it('Get type by QNameEntity', function () {
-    expect(getType(new QNameEntity('type1')) instanceof Entity).toBe(true);
-    expect(getType(new QNameEntity('type1', 'ns')) instanceof Entity).toBe(true);
+    expect(getType(new QNameEntity('type1'))).toBe(Type1InDefNS);
+    expect(getType(new QNameEntity('type1', 'ns'))).toBe(Type1InNS);
     expect(getType(new QNameEntity('type1')) === getType(new QNameEntity('type1', 'ns'))).toBe(false);
-    expect(getType(new QNameEntity('type2')) instanceof Entity).toBe(true);
+    expect(getType(new QNameEntity('type2'))).toBe(Type2InDefNS);
     expect(getType(new QNameEntity('type1')) === getType(new QNameEntity('type2'))).toBe(false);
   });
   it('Create Entity by Class constructor', function () {
-
+    expect(function(){
+      createEntity({
+        $$constructor: "some.UnknownClass",
+        param1: "value", param2: 15, param3: true
+      });
+    }).toThrow();
+    window.test = {
+      TestGlobalClass: function(){}
+    };
+    var entity = createEntity({
+      $$constructor: "test.TestGlobalClass",
+      param1: "value", param2: 15, param3: true
+    });
+    expect(entity instanceof Entity).toBe(true);
+    expect(isEntityClass(window.test.TestGlobalClass)).toBe(true);
+    entity = new window.test.TestGlobalClass();
+    var otherEntity = createEntity(entity);
+    expect(entity).not.toBe(otherEntity);
+    expect(otherEntity instanceof window.test.TestGlobalClass).toBe(true);
   });
   it('Extend Class constructor with Entity', function () {
-    var instance = new extend(function () {
-    })();
+    var constructor = function () {
+    };
+    extend(constructor);
+    var instance = new constructor();
     expect(instance instanceof Entity).toBe(true);
   });
   it('Check if instance is Entity', function () {
@@ -90,5 +110,7 @@ describe('Shared components test', function () {
     expect(isEntityClass(function () {
 
     })).toBe(false);
+    expect(isEntityClass(getType('type1'))).toBe(true);
+    expect(isEntityClass(getType(new QNameEntity('type1', 'ns')))).toBe(true);
   });
 });

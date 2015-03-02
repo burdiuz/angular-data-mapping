@@ -48,10 +48,11 @@ function EntityNamespace(name) {
    */
   this.get = function (name) {
     var definition;
-    name = name || defaultType;
     if (definitions.hasOwnProperty(name) && definitions[name] instanceof Function) {
       definition = definitions[name];
-    } else {
+    } else if(defaultType) {
+      definition = defaultType;
+    }else{
       throw new Error('EntityNamespace "' + this.name + '" does not have entity with name "' + name + '".');
     }
     return definition;

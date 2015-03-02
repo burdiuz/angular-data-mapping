@@ -27,6 +27,7 @@
   module.config([
     "entityServiceProvider",
     function (entityServiceProvider) {
+      // register entity
       entityServiceProvider.register("simple", SimpleEntity);
     }
   ]);
@@ -44,7 +45,7 @@
        * @returns {SimpleEntity}
        */
       this.getData = function (data) {
-        // instead of data argument can be data received from server
+        // instead of argument can be data received from server
         return entityService.create("simple", data);
       }
     }

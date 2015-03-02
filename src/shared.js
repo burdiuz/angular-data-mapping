@@ -30,8 +30,11 @@ var typeMaps = new EntityMaps();
  */
 function addType(name, constructor, namespace) {
   if (name instanceof QNameEntity) {
-    namespace = name.localName;
-    name = name.uri;
+    namespace = name.uri;
+    name = name.localName;
+  }
+  if(!isEntityClass(constructor)){
+    constructor = extend(constructor);
   }
   getNamespace(namespace).add(name, constructor);
 }
@@ -44,8 +47,8 @@ function addType(name, constructor, namespace) {
  */
 function getType(name, namespace) {
   if (name instanceof QNameEntity) {
-    namespace = name.localName;
-    name = name.uri;
+    namespace = name.uri;
+    name = name.localName;
   }
   return getNamespace(namespace).get(name);
 }
@@ -86,10 +89,10 @@ function createEntity(data, constructor, entityTypeMap) {
         throw new Error('Entity class "'+data["$$constructor"]+'" is not defined.');
       }
     }
-  } else if (!isEntityClass(constructor)) {
-    constructor = extend(constructor);
   }
-  if (!constructor) constructor = Entity;
+  if(constructor) {
+    if(!isEntityClass(constructor)) constructor = extend(constructor);
+  }else constructor = Entity;
   instance = new constructor();
   typeMaps.create(instance);
   if (data) {
