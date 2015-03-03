@@ -270,7 +270,6 @@ function Entity() {
       value = newValue;
     }
       function mutator_type(newValue){
-        console.log(valueType);
         if(typeof(newValue)==valueType){
           value = newValue;
         }else{
