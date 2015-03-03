@@ -1,0 +1,8 @@
+{
+  "stringParam": "Any String here",
+  "boolParam": true,
+  "numberParam": 3.14,
+  "id": "abc",
+  "dynamicParam": [1,2,3,4,5],
+  "otherParam": 15
+}

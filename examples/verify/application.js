@@ -2,20 +2,29 @@
  * Created by Oleg Galaburda on 20.02.2015.
  */
 (function (module) {
-  function ApplicationController($scope) {
-    var application = this;
-    application.label = "Hello world!";
+  /**
+   * @class SimpleExampleEntity
+   */
+  function SimpleExampleEntity() {
+    /**
+     * @type {string}
+     */
+    this.stringParam = "";
+    /**
+     * @type {boolean}
+     */
+    this.boolParam = false;
+    /**
+     * @type {Number}
+     */
+    this.numberParam = NaN;
   }
 
-  module.controller('aw.Application', [
-    '$scope',
-    ApplicationController
-  ]);
-
-  module.service('test', [
-    'entityService',
-    function TestService(entityService){
-
+  module.config([
+    "entityServiceProvider",
+    function (entityServiceProvider) {
+      // register entity
+      entityServiceProvider.register("simple", SimpleExampleEntity);
     }
   ]);
-})(angular.module('aw.Application', ['aw.datamapping']));
+})(angular.module("application", ["aw.datamapping"]));

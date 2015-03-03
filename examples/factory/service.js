@@ -3,25 +3,32 @@
  */
 (function (module) {
   module.service("service", [
+    "$http",
     "entityService",
     /**
      * @namespace Service
-     * @param {EntityService} entityService
+     * @param $http
+     * @param {Function} entityService
      * @constructor
      */
-    function Service(entityService) {
-      /**
-       * @type {Function}
-       */
-      var dataFactory = entityService.factory("simple", {children: "simple"});
+      function Service($http, entityService) {
+      var complexEntityFactory = entityService.factory("complex", {
+        descriptor: "descriptor",
+        children: {
+          constructor: "child",
+          descriptor: "descriptor"
+        }
+      });
       /**
        * @function Service#getData
-       * @param {Object} data
-       * @returns {SimpleEntity}
        */
       this.getData = function (data) {
-        // instead of argument can be data received from server
-        return dataFactory(data)
+        return $http.get("data.json").then(
+          function (response) {
+            // passing type map to entityService.create allows to tell entitryService which types have nested objects
+            return complexEntityFactory(response.data);
+          }
+        );
       }
     }
   ]);

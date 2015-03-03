@@ -2,9 +2,8 @@
  * @exports EntityNamespace
  */
 /**
- * @namespace EntityNamespace
+ * @class EntityNamespace
  * @param {string} name
- * @constructor
  */
 function EntityNamespace(name) {
   name =  name ? String(name) : '';
@@ -22,7 +21,6 @@ function EntityNamespace(name) {
   Object.defineProperty(this, 'name', {value: name, writable: false, enumerable: true});
 
   /**
-   * @function EntityNamespace#add
    * @throws {Error} Already has entity with passed name
    * @throws {Error} Requires second parameter to be Entity constructor function.
    * @param {string} name
@@ -40,7 +38,6 @@ function EntityNamespace(name) {
   };
 
   /**
-   * @function EntityNamespace#get
    * @throws {Error} EntityNamespace does not have entity with passed name.
    * @param {string} name
    * @returns {Function}

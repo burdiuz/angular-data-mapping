@@ -3,36 +3,97 @@
  */
 (function (module) {
   /**
-   * @namespace SimpleEntity
-   * @constructor
+   * @class ComplexExampleEntity
    */
-  function SimpleEntity() {
+  function ComplexExampleEntity() {
     /**
-     * @property SimpleEntity#stringParam
      * @type {string}
      */
-    this.stringParam = "";
+    this.id = "";
     /**
-     * @property SimpleEntity#boolParam
-     * @type {boolean}
+     * @type {string}
      */
-    this.boolParam = false;
+    this.type = "COMPL";
     /**
-     * @property SimpleEntity#numberParam
-     * @type {Number}
+     * @type {string}
      */
-    this.numberParam = NaN;
-	/**
-	 * @type {SimpleEntity[]}
-	 */
+    this.title = "";
+    /**
+     * @type {DescriptorExampleEntity}
+     */
+    this.descriptor = null;
+    /**
+     * @type {ChildExampleEntity[]}
+     */
     this.children = [];
+    /**
+     * @param {number} index
+     */
+    this.getChild = function(index){
+      return this.children ? this.children[index] : null;
+    }
+  }
+  /**
+   * @class ChildExampleEntity
+   */
+  function ChildExampleEntity() {
+    /**
+     * @type {string}
+     */
+    this.id = "";
+    /**
+     * @type {string}
+     */
+    this.type = "CHILD";
+    /**
+     * @type {string}
+     */
+    this.title = "";
+    /**
+     * @type {Object}
+     */
+    this.value = null;
+    /**
+     * @type {DescriptorExampleEntity}
+     */
+    this.descriptor = null;
+  }
+
+  /**
+   * @class DescriptorExampleEntity
+   */
+  function DescriptorExampleEntity(){
+    /**
+     * @type {string}
+     */
+    this.id = "";
+    /**
+     * @type {string}
+     */
+    this.type = "DESC";
+    /**
+     * @type {string}
+     */
+    this.description = "";
+    /**
+     * @property DescriptorExampleEntity#descriptorMask
+     * @type {string}
+     */
+    Object.defineProperty(this, "descriptorMask", {
+      get: function(){
+        return this.type+"/"+this.id;
+      },
+      enumerable: true
+    });
   }
 
   module.config([
     "entityServiceProvider",
     function (entityServiceProvider) {
       // register entity
-      entityServiceProvider.register("simple", SimpleEntity);
+      entityServiceProvider.register("complex", ComplexExampleEntity);
+      entityServiceProvider.register("descriptor", DescriptorExampleEntity);
+      entityServiceProvider.register("child", ChildExampleEntity);
     }
   ]);
 })(angular.module("application", ["aw.datamapping"]));

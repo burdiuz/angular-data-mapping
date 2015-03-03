@@ -2,14 +2,16 @@
  * @exports EntityMaps
  */
 /**
- * @namespace EntityMaps
- * @constructor
+ * @class EntityMaps
  */
 function EntityMaps() {
+  /**
+   * @private
+   * @type {Dictionary}
+   */
   var maps = new Dictionary();
   //TODO #propertyTypes = add support for registered string names and QNameEntities
   /**
-   * @function EntityMaps#create
    * @param {Object} object
    * @param {Object} propertyTypes
    * @returns {Object}
@@ -38,7 +40,6 @@ function EntityMaps() {
     return map;
   };
   /**
-   * @function EntityMaps#has
    * @param {Object} object
    * @returns {boolean}
    */
@@ -46,7 +47,6 @@ function EntityMaps() {
     return maps.has(getDefinition(object));
   };
   /**
-   * @function EntityMaps#hasDefinition
    * @param {Function} definition
    * @returns {boolean}
    */
@@ -55,7 +55,6 @@ function EntityMaps() {
   };
   //TODO Add support for deep verify, including nested entites
   /**
-   * @function EntityMaps#verify
    * @param {Object} object
    * @param {boolean} deep
    * @returns {boolean}

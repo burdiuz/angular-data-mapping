@@ -2,20 +2,55 @@
  * Created by Oleg Galaburda on 20.02.2015.
  */
 (function (module) {
-  function ApplicationController($scope) {
-    var application = this;
-    application.label = "Hello world!";
+  /**
+   * @class ChildPropExampleEntity
+   */
+  function ChildPropExampleEntity(){
+
+  }
+  /**
+   * @namespace PropertiesExampleEntity
+   */
+  function PropertiesExampleEntity() {
+    /**
+     * @property PropertiesExampleEntity#stringParam
+     * @type {string}
+     */
+    this.property("stringParam", "default");
+    /**
+     * @property PropertiesExampleEntity#boolParam
+     * @type {boolean}
+     */
+    this.property("boolParam", false);
+    /**
+     * @property PropertiesExampleEntity#numberParam
+     * @type {number}
+     */
+    this.property("numberParam", NaN);
+    /**
+     * @property PropertiesExampleEntity#childPropParam
+     * @type {ChildPropExampleEntity}
+     */
+    this.property("childPropParam", null, false, ChildPropExampleEntity);
+    /**
+     * @property PropertiesExampleEntity#entityParam
+     * @type {Entity}
+     */
+    this.property("entityParam", null, false, Entity);
+    /**
+     * @property PropertiesExampleEntity#readOnlyParam
+     * @type {string}
+     * @readonly
+     */
+    this.property("readOnlyParam", "CONST", true);
   }
 
-  module.controller('aw.Application', [
-    '$scope',
-    ApplicationController
-  ]);
-
-  module.service('test', [
-    'entityService',
-    function TestService(entityService){
-
+  module.config([
+    "entityServiceProvider",
+    function (entityServiceProvider) {
+      // register entity
+      entityServiceProvider.register("Props", PropertiesExampleEntity);
+      entityServiceProvider.register("ChildProp", ChildPropExampleEntity);
     }
   ]);
-})(angular.module('aw.Application', ['aw.datamapping']));
+})(angular.module("application", ["aw.datamapping"]));

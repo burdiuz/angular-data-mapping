@@ -6,9 +6,7 @@
     <link rel="stylesheet" href="../../bower_components/bootstrap/dist/css/bootstrap.css">
 </head>
 <body ng-app="application" ng-controller="Application as application">
-{{application.data.stringParam}}<br/>
-{{application.data.boolParam}}<br/>
-{{application.data.numberParam}}<br/>
+<pre>{{application.jsonData}}</pre>
 </body>
 <!-- core libraries -->
 <script type="text/javascript" src="../../bower_components/jquery/dist/jquery.js"></script>
@@ -16,6 +14,8 @@
 <script type="text/javascript" src="../../bower_components/angular/angular.js"></script>
 <!-- angular components api -->
 <script type="text/javascript" src="../../dist/datamapping.js"></script>
-<script type="text/javascript" src="../../application.js"></script>
+<script type="text/javascript" src="application.js"></script>
+<script type="text/javascript" src="service.js"></script>
+<script type="text/javascript" src="controller.js"></script>
 <!-- custom scripts, components, stuff -->
 </html>

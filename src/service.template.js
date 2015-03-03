@@ -2,9 +2,8 @@
   var module = angular.module('aw.datamapping', []);
   module.provider('entityService',
     /**
-     * @namespace EntityServiceProvider
+     * @class EntityServiceProvider
      * @extends EntityServiceSharedInterface
-     * @constructor
      */
     function EntityServiceProvider() {
       EntityServiceSharedInterface.apply(this);
@@ -50,14 +49,12 @@
     }
   );
   /**
-   * @namespace EntityService
+   * @class EntityService
    * @extends EntityServiceSharedInterface
-   * @constructor
    */
   function EntityService() {
     EntityServiceSharedInterface.apply(this);
     /**
-     * @function EntityService#create
      * @param {string|QNameEntity} name
      * @param {Object} [data]
      * @param {Object} [entityTypeMap]
@@ -70,7 +67,6 @@
       return createEntity(data, definition, entityTypeMap);
     };
     /**
-     * @function EntityService#createNew
      * @param {string|QNameEntity} name
      * @param [namespace]
      * @returns {Entity}
@@ -82,7 +78,6 @@
     };
     /**
      * Method to create factories for Entities, pass data type and Entity Type Map for properties and it will return Entity based on passed data and Entity Type Map.
-     * @function EntityService#factory
      * @param {string|QNameEntity} name
      * @param {Object} [entityTypeMap]
      * @param [namespace]
@@ -99,7 +94,6 @@
       };
     };
     /**
-     * @function EntityService#verify
      * @param {Object} data
      * @returns {boolean|undefined}
      */
@@ -109,8 +103,7 @@
   }
   /**
    * @private
-   * @namespace EntityServiceSharedInterface
-   * @constructor
+   * @class EntityServiceSharedInterface
    */
   function EntityServiceSharedInterface() {
     /**

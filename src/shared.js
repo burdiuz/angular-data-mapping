@@ -23,7 +23,6 @@ var defaultNamespace = '';
  */
 var typeMaps = new EntityMaps();
 /**
- * @function addType
  * @param {string|QNameEntity} name
  * @param {Function} constructor
  * @param {string} [namespace]
@@ -54,7 +53,6 @@ function getType(name, namespace) {
 }
 
 /**
- * @function getNamespace
  * @param {string} name
  * @returns {EntityNamespace}
  */
@@ -70,7 +68,6 @@ function getNamespace(name) {
 }
 
 /**
- * @function createEntity
  * @param {Object} data
  * @param {Function} [constructor]
  * @param {Object} [entityTypeMap]
@@ -104,7 +101,6 @@ function createEntity(data, constructor, entityTypeMap) {
   return instance;
 }
 /**
- * @function extend
  * @param {Function} constructor
  * @returns {Function}
  */
@@ -114,7 +110,6 @@ function extend(constructor) {
   return constructor;
 }
 /**
- * @function isEntity
  * @param {Object} instance
  * @param {string|QNameEntity} name
  * @return {boolean}
@@ -126,7 +121,6 @@ function isEntity(instance, name) {
   return instance instanceof Entity;
 }
 /**
- * @function isEntityClass
  * @param {Function} constructor
  * @return {boolean}
  */

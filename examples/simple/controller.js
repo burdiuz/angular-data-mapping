@@ -6,21 +6,53 @@
     "service",
     "entityService",
     function ApplicationController(service, entityService) {
+      var app = this;
       /**
-       * @type {SimpleEntity}
+       * @type {string}
        */
-      this.data;
+      app.jsonData = "";
       // lets receive empty object from service
-      this.data = service.getData({});
-      console.log(this.data);
+      service.getEmptyData().then(
+        /**
+         * @param {SimpleExampleEntity} entity
+         */
+        function(entity){
+          /*
+          You can see that default property values are still there
+           */
+          console.log("Empty Entity loaded", entity);
+          console.log("boolParam:", entity.boolParam);
+          console.log("numberParam:", entity.numberParam);
+          console.log("stringParam:", entity.stringParam);
+          console.log("Using \"entityService\" you can check entity type:");
+          console.log("entity instanceof entityService.get(\"simple\"); - ", entity instanceof entityService.get("simple"));
+          console.log("entity instanceof entityService.get(\"Entity\"); - ", entity instanceof entityService.get('Entity'));
+          console.log("Or use shortcuts:");
+          console.log("entityService.isEntity(entity); - ", entityService.isEntity(entity));
+          console.log("entityService.isEntity(entity, \"simple\"); - ", entityService.isEntity(entity, "simple"));
+        }
+      );
       // lets receive ordinary object from service
-      this.data = service.getData({
-        stringParam: "Any String here",
-        boolParam: true,
-        numberParam: 3.14
-      });
-      console.log(this.data);
-      console.log(this.data instanceof entityService.get('simple'), this.data instanceof  entityService.get('Entity'));
+      this.data = service.getData().then(
+        /**
+         * @param {SimpleExampleEntity} entity
+         */
+        function(entity){
+          /*
+           Even if you didn't describe properties they are will be added anyway.
+           */
+          console.log("Entity with more data loaded", entity);
+          console.log(" -- defined properties");
+          console.log("boolParam:", entity.boolParam);
+          console.log("numberParam:", entity.numberParam);
+          console.log("stringParam:", entity.stringParam);
+          console.log(" -- not defined properties");
+          console.log("id:", entity.id);
+          console.log("dynamicParam:", entity.dynamicParam);
+          console.log("otherParam:", entity.otherParam);
+          app.jsonData = JSON.stringify(entity.valueOf(), null, 2);
+        }
+      );
     }
   ]);
 })(angular.module("application"));

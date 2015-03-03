@@ -3,22 +3,18 @@
  */
 (function (module) {
   /**
-   * @namespace SimpleEntity
-   * @constructor
+   * @class SimpleExampleEntity
    */
-  function SimpleEntity() {
+  function SimpleExampleEntity() {
     /**
-     * @property SimpleEntity#stringParam
      * @type {string}
      */
     this.stringParam = "";
     /**
-     * @property SimpleEntity#boolParam
      * @type {boolean}
      */
     this.boolParam = false;
     /**
-     * @property SimpleEntity#numberParam
      * @type {Number}
      */
     this.numberParam = NaN;
@@ -28,7 +24,7 @@
     "entityServiceProvider",
     function (entityServiceProvider) {
       // register entity
-      entityServiceProvider.register("simple", SimpleEntity);
+      entityServiceProvider.register("simple", SimpleExampleEntity);
     }
   ]);
 })(angular.module("application", ["aw.datamapping"]));

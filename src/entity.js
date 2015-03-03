@@ -2,9 +2,8 @@
  * @exports Entity
  */
 /**
- * @namespace Entity
+ * @class Entity
  * @extends Object
- * @constructor
  */
 function Entity() {
   /**

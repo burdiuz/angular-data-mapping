@@ -68,6 +68,10 @@
       });
       console.log(this.data);
       console.log(this.data instanceof SimpleEntity, this.data instanceof Entity);
+      /**
+       * @type {EntityService}
+       */
+      var service;
     }
   ]);
 })(angular.module("application", ["aw.datamapping"]));

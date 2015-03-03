@@ -1,0 +1,7 @@
+{
+  "stringParam": "Any String here",
+  "boolParam": true,
+  "numberParam": 3.14,
+  "childPropParam": {},
+  "entityParam": {}
+}

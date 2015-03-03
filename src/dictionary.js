@@ -1,10 +1,6 @@
 /**
  * @exports Dictionary
  */
-/**
- * @namespace Dictionary
- * @constructor
- */
 /*TODO Check possibility to make Dictionary with using hidden constructor IDs
  // dictionary holds
  var maps = {};
@@ -13,20 +9,24 @@
  Object.defineProperty(constructor, "$entityClassId", {value: getUniqueId(), writable: false, enumerable: false});
  maps[constructor.$entityClassId] = map;
 */
+/**
+ * @class Dictionary
+ */
 function Dictionary() {
 
   /**
+   * @private
    * @type {Array}
    */
   var keys;
 
   /**
+   * @private
    * @type {Array}
    */
   var values;
 
   /**
-   * @function Dictionary#add
    * @param {*} key
    * @param {*} value
    */
@@ -42,7 +42,6 @@ function Dictionary() {
   };
 
   /**
-   * @function Dictionary#get
    * @param {*} key
    * @returns {*}
    */
@@ -52,7 +51,6 @@ function Dictionary() {
   };
 
   /**
-   * @function Dictionary#getFirstKey
    * @param {*} value
    * @returns {*}
    */
@@ -62,7 +60,6 @@ function Dictionary() {
   };
 
   /**
-   * @function Dictionary#getAllKeys
    * @param {*} value
    * @returns {Array}
    */
@@ -77,7 +74,6 @@ function Dictionary() {
   };
 
   /**
-   * @function Dictionary#has
    * @param {*} key
    * @returns {boolean}
    */
@@ -86,7 +82,6 @@ function Dictionary() {
   };
 
   /**
-   * @function Dictionary#remove
    * @param {*} key
    */
   this.remove = function (key) {
@@ -97,9 +92,6 @@ function Dictionary() {
     }
   };
 
-  /**
-   * @function Dictionary#clear
-   */
   this.clear = function () {
     keys = [];
     values = [];

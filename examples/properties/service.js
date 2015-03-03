@@ -14,20 +14,13 @@
       /**
        * @function Service#getData
        */
-      this.getEmptyData = function () {
-        return $http.get("empty.json").then(
-          function (response) {
-            return entityService.create("simple", response.data);
-          }
-        );
-      };
-      /**
-       * @function Service#getData
-       */
       this.getData = function () {
         return $http.get("data.json").then(
           function (response) {
-            return entityService.create("simple", response.data);
+            return entityService.create("Props", response.data, {
+              childPropParam: "ChildProp",
+              entityParam: "Entity"
+            });
           }
         );
       };

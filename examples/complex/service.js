@@ -3,21 +3,31 @@
  */
 (function (module) {
   module.service("service", [
+    "$http",
     "entityService",
     /**
      * @namespace Service
+     * @param $http
      * @param {EntityService} entityService
      * @constructor
      */
-    function Service(entityService) {
+    function Service($http, entityService) {
       /**
        * @function Service#getData
-       * @param {Object} data
-       * @returns {SimpleEntity}
        */
       this.getData = function (data) {
-        // instead of argument can be data received from server
-        return entityService.create("simple", data, {children: "simple"});
+        return $http.get("data.json").then(
+          function(response){
+            // passing type map to entityService.create allows to tell entitryService which types have nested objects
+            return entityService.create("complex", response.data, {
+              descriptor: "descriptor",
+              children: {
+                constructor: "child",
+                descriptor: "descriptor"
+              }
+            });
+          }
+        );
       }
     }
   ]);

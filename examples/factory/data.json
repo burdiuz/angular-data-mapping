@@ -1,0 +1,73 @@
+{
+  "id": "COMPL-0001",
+  "title": "Music Folder",
+  "descriptor": {
+    "id": "235435",
+    "description": "Folder for music files"
+  },
+  "children": [
+    {
+      "id": "0001",
+      "title": "Artist #1 - Song #1",
+      "value": "/documents/music/artist1/song1.mp3",
+      "descriptor": {
+        "id": "7235467",
+        "description": "First child object"
+      }
+    },
+    {
+      "id": "0002",
+      "title": "Artist #1 - Song #2",
+      "value": "/documents/music/artist1/song2.mp3",
+      "descriptor": {
+        "id": "096753",
+        "description": "Second child object"
+      }
+    },
+    {
+      "id": "0003",
+      "title": "Artist #1 - Song #3",
+      "value": "/documents/music/artist1/song3.mp3",
+      "descriptor": {
+        "id": "214543",
+        "description": "Third child object"
+      }
+    },
+    {
+      "id": "0004",
+      "title": "Artist #2 - Song #1",
+      "value": "/documents/music/artist2/song1.mp3",
+      "descriptor": {
+        "id": "173656",
+        "description": "Fourth child object"
+      }
+    },
+    {
+      "id": "0005",
+      "title": "Artist #2 - Song #2",
+      "value": "/documents/music/artist2/song2.mp3",
+      "descriptor": {
+        "id": "1954",
+        "description": "Fifth child object"
+      }
+    },
+    {
+      "id": "0006",
+      "title": "Artist #2 - Song #3",
+      "value": "/documents/music/artist2/song3.mp3",
+      "descriptor": {
+        "id": "3459",
+        "description": "Sixth child object"
+      }
+    },
+    {
+      "id": "0007",
+      "title": "Artist #2 - Song #4",
+      "value": "/documents/music/artist2/song4.mp3",
+      "descriptor": {
+        "id": "563432",
+        "description": "Seventh child object"
+      }
+    }
+  ]
+}

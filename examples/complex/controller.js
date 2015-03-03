@@ -6,23 +6,25 @@
     "service",
     "entityService",
     function ApplicationController(service, entityService) {
-      /**
-       * @type {SimpleEntity}
-       */
-      this.data = service.getData({// lets receive ordinary object from service
-        stringParam: "Any String here",
-        boolParam: true,
-        numberParam: 3.14,
-        children: [
-          {stringParam: "First Child"},
-          {stringParam: "Second Child"},
-          {stringParam: "Third Child"},
-          {stringParam: "Fourth Child"},
-          {stringParam: "Fifth Child"}
-        ]
-      });
-      // Every nested object from data.children will be instance of SimpleEntity
-      console.log(this.data);
+      var app = this;
+      app.jsonData = "";
+        service.getData().then(
+        /**
+         * @param {ComplexExampleEntity} entity
+         */
+        function (entity){
+          // Every nested object from data.children will be instance of ChildExampleEntity
+          console.log('Complex Entity:');
+          console.log(entity);
+          console.log('Second child Entity:');
+          console.log(entity.getChild(1));
+          console.log('Fifth child Entity:');
+          console.log(entity.getChild(4));
+          console.log('Descriptor Mask of Third child Entity:');
+          console.log(entity.getChild(2).descriptor.descriptorMask);
+          app.jsonData = JSON.stringify(entity.valueOf(), null, 2);
+        }
+      );
     }
   ]);
 })(angular.module("application"));
