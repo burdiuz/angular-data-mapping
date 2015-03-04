@@ -5,7 +5,7 @@
   /**
    * @class ComplexExampleEntity
    */
-  function ComplexExampleEntity() {
+  function CAAAAomplexExampleEntity() {
     /**
      * @type {string}
      */
@@ -75,6 +75,21 @@
      * @type {string}
      */
     this.description = "";
+    var date = new Date();
+    /**
+     * @property DescriptorExampleEntity#date
+     * @type {Date}
+     */
+    Object.defineProperty(this, "date", {
+      get: function(){
+        return date;
+      }
+      set: function(value){
+        if(typeof(value)==="string"){
+          date = Date.parse(value);
+        }else date = value;
+      }
+    })
     /**
      * @property DescriptorExampleEntity#descriptorMask
      * @type {string}
@@ -91,9 +106,12 @@
     "entityServiceProvider",
     function (entityServiceProvider) {
       // register entity
-      entityServiceProvider.register("complex", ComplexExampleEntity);
+      entityServiceProvider.register("complex", CAAAAomplexExampleEntity);
       entityServiceProvider.register("descriptor", DescriptorExampleEntity);
       entityServiceProvider.register("child", ChildExampleEntity);
+      entityServiceProvider.register("complex", CAAAAomplexExampleEntity, "ns");
+      entityServiceProvider.register("descriptor", DescriptorExampleEntity, "ns");
+      entityServiceProvider.register("child", ChildExampleEntity, "ns");
     }
   ]);
 })(angular.module("application", ["aw.datamapping"]));

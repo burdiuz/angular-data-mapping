@@ -18,7 +18,12 @@
      * @type {Number}
      */
     this.numberParam = NaN;
+
+    this.init = function(param){
+      // validate myself
+    }
   }
+  Entity
 
   module.config([
     "entityServiceProvider",

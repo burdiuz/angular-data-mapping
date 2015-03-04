@@ -37,12 +37,14 @@
      * @type {Entity}
      */
     this.property("entityParam", null, false, Entity);
+
+    this.readOnlyParam = "";
     /**
      * @property PropertiesExampleEntity#readOnlyParam
      * @type {string}
      * @readonly
      */
-    this.property("readOnlyParam", "CONST", true);
+    //this.property("readOnlyParam", "CONST", true);
   }
 
   module.config([

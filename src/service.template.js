@@ -15,6 +15,7 @@
        * @inheritDoc addType
        * @instance
        */
+      //TODO add abilitry to pass Data Type Map with constructor field instead of name, and save this map as default for such entities
       this.register = function (name, constructor, namespace){
         addType(name, constructor, namespace);
       };
@@ -97,6 +98,8 @@
      * @param {Object} data
      * @returns {boolean|undefined}
      */
+    //TODO Add shared function to get value type -- constructor or string
+    //TODO Add optional second parameter to pass log function function log(target, propertyName, requiredType, currentType)
     this.verify = function (data) {
       return typeMaps.verify(data);
     };

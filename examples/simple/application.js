@@ -4,6 +4,7 @@
 (function (module) {
   /**
    * @class SimpleExampleEntity
+   * @extends Entity
    */
   function SimpleExampleEntity() {
     /**

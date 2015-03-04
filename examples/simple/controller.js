@@ -51,6 +51,10 @@
           console.log("dynamicParam:", entity.dynamicParam);
           console.log("otherParam:", entity.otherParam);
           app.jsonData = JSON.stringify(entity.valueOf(), null, 2);
+
+          entity.apply({stringParam: "Hello!"});
+          console.log(entity);
+
         }
       );
     }
