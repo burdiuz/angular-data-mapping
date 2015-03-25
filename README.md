@@ -5,6 +5,21 @@
 
 Simple Data Mapping framework for [AngularJS](https://angularjs.org/). Convert raw JSON data into collections of registered Entity classes. That makes better picture of what data you manipulate and injection of additional tools, like apply() and copy() Entity methods. Having classes of objects helps in development allowing [JSDoc](http://usejsdoc.org/) with context help in modern [IDEs](http://www.jetbrains.com/webstorm/).
 
+# TODO's
+ * `EntityService.verify(data)` - add shared function to get value type -- constructor/string/QNameEntity
+ * `EntityService.verify(data)` - add optional second parameter to pass log function function log(target, propertyName, requiredType, currentType)
+ * `EntityServiceProvider.register(name, constructor, namespace)` - add ability to pass Data Type Map with constructor field instead of name, and save this map as default for such entities
+ * `Dictionary` - check possibility to make Dictionary with using hidden IDs, Object 2 Object Dictionary, that will add hidden IDs to objects and resolve links using them
+ * `Entity.apply(object)` - check possibility to apply Entity class to custom objects via replacing __proto__ & constructor values.
+ * `EntityMaps` - add support for registered string names and QNameEntities as property type, so property type can be string representing Entity
+ *+`EntityMaps.create(object, propertyTypes)` - angular ignores properties prefixed with "$$", we will ignore any prperty starting with "$"
+ * `EntityMaps.verify(object, deep)` - add support for deep verify, including nested entites
+ * `EntityServiceProvider` - add possibility to register interceptor for $http request that will execute Entity.valueOf() for data
+ * `EntityServiceProvider` - add possibility to register interceptor for $http response that will allow to bind data map to specific URL(baseURL + parameters = baseURL/*/action/*) this might be resolved with tree structure {http:{domain:{port:status:{"*":{action:{"*":function(){ .. convert }}}}}}}
+ *+`EntityService` - rename  `createNew` to `create` and `create` to `apply`
+
+
+
 # Installation
 You can clone repository  
 > git clone git://github.com/burdiuz/angular-data-mapping.git

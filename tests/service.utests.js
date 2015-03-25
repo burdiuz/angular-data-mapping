@@ -30,9 +30,9 @@ describe('AngularJS Service tests', function () {
     addType('child', ChildEntity, 'cns');
   });
   it('Create New Entity', function () {
-    expect(service.createNew('parent') instanceof ParentEntity).toBe(true);
-    expect(service.createNew('child', 'cns') instanceof ChildEntity).toBe(true);
-    expect(service.createNew(new QNameEntity('child', 'cns')) instanceof ChildEntity).toBe(true);
+    expect(service.create('parent') instanceof ParentEntity).toBe(true);
+    expect(service.create('child', 'cns') instanceof ChildEntity).toBe(true);
+    expect(service.create(new QNameEntity('child', 'cns')) instanceof ChildEntity).toBe(true);
   });
   it('Test service Utils', function () {
     expect(service.isEntity(new ParentEntity())).toBe(true);
@@ -41,8 +41,8 @@ describe('AngularJS Service tests', function () {
     expect(service.getNamespace() instanceof EntityNamespace).toBe(true);
     expect(service.get(new QNameEntity('child', 'cns'))).toBe(ChildEntity);
   });
-  it('Create Entity from Data', function () {
-    var data = service.create('parent',
+  it('Apply Entity Types to Data', function () {
+    var data = service.apply('parent',
       {
         children: [
           {param: 1},

@@ -17,14 +17,13 @@ function EntityMaps() {
    * @returns {Object}
    */
   this.create = function (object, propertyTypes) {
-    //FIXME verify if angular utility properties are enumerable, if yes, then add condition to skip them(charAt()=="$")
     var map;
     var definition = getDefinition(object);
     map = maps.get(definition);
     if (!map) {
       map = {};
       for (var param in object) {
-        if (object.hasOwnProperty(param) && typeof(object[param]) != "function") {
+        if (object.hasOwnProperty(param) && param.charAt() != "&" && typeof(object[param]) != "function") {
           if (propertyTypes && propertyTypes.hasOwnProperty(param)) {
             map[param] = propertyTypes[param];
           } else {

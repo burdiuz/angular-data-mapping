@@ -63,7 +63,7 @@
      * @returns {Entity}
      * @instance
      */
-    this.create = function (name, data, entityTypeMap, namespace) {
+    this.apply = function (name, data, entityTypeMap, namespace) {
       var definition = this.get(name, namespace);
       return createEntity(data, definition, entityTypeMap);
     };
@@ -73,7 +73,7 @@
      * @returns {Entity}
      * @instance
      */
-    this.createNew = function (name, namespace) {
+    this.create = function (name, namespace) {
       var definition = this.get(name, namespace);
       return new definition();
     };
