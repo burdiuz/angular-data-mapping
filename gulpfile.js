@@ -9,14 +9,14 @@ const MODULE_DESTINATION_PATH = "dist/datamapping.js";
 const MODULE_MINIMIZED_PATH = "dist/datamapping.min.js";
 const TEST_PATH = "tests/";
 
-(function () {
+(function() {
   "use strict";
   function readFile(path) {
     var content = fs.readFileSync(path);
     return content.toString();
   }
 
-  gulp.task('build', [], function () {
+  gulp.task('build', [], function() {
     var strip = require("strip-comments"),
       glob = require("glob");
     var template = readFile(MODULE_TEMPLATE_PATH);
@@ -44,7 +44,7 @@ const TEST_PATH = "tests/";
 
   });
 })();
-gulp.task('minimize', ['build'], function () {
+gulp.task('minimize', ['build'], function() {
   var uglify = require('gulp-uglify'),
     rename = require("gulp-rename");
   gulp.src(MODULE_DESTINATION_PATH)
@@ -53,7 +53,7 @@ gulp.task('minimize', ['build'], function () {
     .pipe(gulp.dest(DEST_BASE_DIR));
 });
 var tinylr;
-gulp.task('livereload', function () {
+gulp.task('livereload', function() {
   tinylr = require('tiny-lr')();
   tinylr.listen(3029);
 });
@@ -68,18 +68,18 @@ function notifyLiveReload(event) {
   });
 }
 // watch and then build
-gulp.task('watch', ['build'], function () {
+gulp.task('watch', ['build'], function() {
   gulp.watch(SRC_BASE_DIR + '**/*.js', ['build']);
   gulp.watch(MODULE_DESTINATION_PATH, notifyLiveReload);
 });
-gulp.task('express', [], function () {
+gulp.task('express', [], function() {
   var express = require('express');
   var app = express();
   app.use(require('connect-livereload')({port: 3029}));
   app.use(express.static(__dirname));
   app.listen(3030);
 });
-gulp.task('default', ['express', 'livereload', 'watch'], function () {
+gulp.task('default', ['express', 'livereload', 'watch'], function() {
   var open = require("gulp-open");
   gulp.src("index.html")
     .pipe(open("", {
