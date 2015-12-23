@@ -2,6 +2,7 @@
 [![Build Status](https://travis-ci.org/burdiuz/angular-data-mapping.svg?branch=master)](https://travis-ci.org/burdiuz/angular-data-mapping)
 [![Coverage Status](https://coveralls.io/repos/burdiuz/angular-data-mapping/badge.svg?branch=master)](https://coveralls.io/r/burdiuz/angular-data-mapping?branch=master)
 [![Bower version](https://badge.fury.io/bo/angular-data-mapping.svg)](http://badge.fury.io/bo/angular-data-mapping)
+[![Dependencies](https://david-dm.org/burdiuz/angular-data-mapping.svg)
 
 Simple Data Mapping framework for [AngularJS](https://angularjs.org/). Convert raw JSON data into collections of registered Entity classes. That makes better picture of what data you manipulate and injection of additional tools, like apply() and copy() Entity methods. Having classes of objects helps in development allowing [JSDoc](http://usejsdoc.org/) with context help in modern [IDEs](http://www.jetbrains.com/webstorm/).
 
